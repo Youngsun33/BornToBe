@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">BornToBe</string>
+    <!-- activity sign in -->
+    <string name="activity_sign_in_tvSignIn">로그인</string>
+    <string name="activity_sign_in_etIDHint">ID</string>
+    <string name="activity_sign_in_etPWHint">PW</string>
+    <string name="activity_sign_in_tvInfo">아직 회원이 아니신가요?</string>
+    <string name="activity_sign_in_btnSignUp">회원가입</string>
+    <!-- activity sign up -->
+    <string name="activity_sign_up_tvSignUp">회원가입</string>
+    <string name="activity_sign_up_tvID">아이디</string>
+    <string name="activity_sign_up_etIDHint">예 : borntobe1</string>
+    <string name="activity_sign_up_tvIDInfo">6자 이상의 영문 혹은 영문과 숫자를 조합해주세요.</string>
+    <string name="activity_sign_up_btnIDCheck">중복 검사</string>
+    <string name="activity_sign_up_tvPW">비밀번호</string>
+    <string name="activity_sign_up_etPWHint">비밀번호를 입력해 주세요.</string>
+    <string name="activity_sign_up_tvPWCheck">비밀번호 확인</string>
+    <string name="activity_sign_up_etPWCheck">비밀번호를 한번 더 입력해 주세요.</string>
+    <string name="activity_sign_up_tvNickName">닉네임</string>
+    <string name="activity_sign_up_etNickNameHint">예 : 본투비</string>
+    <string name="activity_sign_up_btnSignIn">다음</string>
+</resources>
