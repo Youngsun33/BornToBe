@@ -48,4 +48,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+
+    // CNN알고리즘 사용을 위한 TensorFlow Lite 추가
+    implementation("org.tensorflow:tensorflow-lite:+")
 }
