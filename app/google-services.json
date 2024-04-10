@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "235752182915",
+    "project_id": "borntobe-1bcc0",
+    "storage_bucket": "borntobe-1bcc0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:235752182915:android:2083bd97ac5c8d0cd337b6",
+        "android_client_info": {
+          "package_name": "com.example.borntobe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHy9SuORF5TnJS3GrDBW3o51SN7sl3Vys"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
