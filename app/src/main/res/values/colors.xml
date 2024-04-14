@@ -3,5 +3,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="burgundy">#691734</color>
+    <color name="burgundy_dark">#420F21</color>
     <color name="gray">#A1A1A1</color>
 </resources>

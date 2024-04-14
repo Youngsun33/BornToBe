@@ -7,7 +7,7 @@
     <string name="activity_sign_in_tvInfo">아직 회원이 아니신가요?</string>
     <string name="activity_sign_in_btnSignUp">회원가입</string>
     <!-- activity sign up -->
-    <string name="activity_sign_up_tvSignUp">회원가입</string>
+    <string name="activity_sign_up_tvSignUp">회원 가입</string>
     <string name="activity_sign_up_tvID">아이디</string>
     <string name="activity_sign_up_etIDHint">예 : borntobe1</string>
     <string name="activity_sign_up_tvIDInfo">6자 이상의 영문 혹은 영문과 숫자를 조합해주세요.</string>
@@ -16,7 +16,17 @@
     <string name="activity_sign_up_etPWHint">비밀번호를 입력해 주세요.</string>
     <string name="activity_sign_up_tvPWCheck">비밀번호 확인</string>
     <string name="activity_sign_up_etPWCheck">비밀번호를 한번 더 입력해 주세요.</string>
-    <string name="activity_sign_up_tvNickName">닉네임</string>
-    <string name="activity_sign_up_etNickNameHint">예 : 본투비</string>
-    <string name="activity_sign_up_btnSignIn">다음</string>
+    <string name="activity_sign_up_tvUserName">닉네임</string>
+    <string name="activity_sign_up_etUserNameHint">예 : 본투비</string>
+    <string name="activity_sign_up_btnSignUp">다음</string>
+    <!-- ID, PW Digits -->
+    <string name="digits_ID">0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM</string>
+    <string name="digits_PW">0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM!@#$%?_</string>
+    <!-- activity main -->
+    <string name="activity_main_tvInfo">나에게 가장 잘 어울리는 스타일은?</string>
+    <string name="activity_main_tvInfo2">여러분의 체형과 얼굴형에 어울리는 스타일을 추천해드릴게요!</string>
+    <string name="activity_main_btnAnalysis">사진 찍고 분석 받기</string>
+    <string name="activity_main_tvInfo3">나만을 위한 스타일 분석을 경험해보고 싶다면?</string>
+    <string name="activity_main_btnFaceAnalysis">얼굴형 분석</string>
+    <string name="activity_main_btnBodyAnalysis">체형 분석</string>
 </resources>
