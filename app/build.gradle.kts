@@ -5,6 +5,10 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+
+// Navigation component 버전 정의
+val navigationVersion = "2.3.0"
+
 android {
     namespace = "com.example.borntobe"
     compileSdk = 34
@@ -47,6 +51,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -62,9 +68,11 @@ dependencies {
     // https://firebase.google.com/docs/android/setup#available-libraries
 
     //파이어베이스 연동을 위해 추가함
-    implementation ("com.google.firebase:firebase-analytics-ktx")
-    implementation ("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx")
 
-
+    // Navigation component 의존성 추가
+    implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
+    implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
 
 }
