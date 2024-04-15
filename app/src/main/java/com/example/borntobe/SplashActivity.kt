@@ -23,7 +23,7 @@ class SplashActivity : AppCompatActivity() {
                 startActivity(Intent(this, MainActivity::class.java))
             } else {
                 // 로그인x -> 온보딩 화면
-                startActivity(Intent(this, MainActivity::class.java)) //OnboardingActivity 없어서 에러-> 일단MainActivity넣어놓음
+                startActivity(Intent(this, MainActivity::class.java)) //OnboardingActivity 없어서 에러-> 일단 MainActivity넣어놓음
             }
             // 현재 액티비티 종료
             finish()

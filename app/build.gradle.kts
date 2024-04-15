@@ -67,5 +67,8 @@ dependencies {
     implementation ("com.google.firebase:firebase-auth-ktx")
 
 
+    // ML Kit Android 라이브러리의 종속 항목 추가
+    implementation ("com.google.mlkit:face-detection:16.0.6")
+
 
 }
