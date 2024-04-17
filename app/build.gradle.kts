@@ -5,10 +5,6 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-
-// Navigation component 버전 정의
-val navigationVersion = "2.3.0"
-
 android {
     namespace = "com.example.borntobe"
     compileSdk = 34
@@ -43,6 +39,13 @@ android {
         viewBinding = true
     }
 }
+//
+//allprojects {
+//    repositories {
+//        maven { url = uri("https://jitpack.io") }
+//    }
+//}
+
 
 dependencies {
 
@@ -71,8 +74,13 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
 
-    // Navigation component 의존성 추가
-    implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
-    implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
+    // navigation component
+    val nav_version = "2.7.7"
+    implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
+    implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+
+    // ViewPager2
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+
 
 }

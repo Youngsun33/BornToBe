@@ -1,15 +1,14 @@
 package com.example.borntobe
 
+import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import androidx.navigation.fragment.findNavController
 
 class SplashFragment : Fragment() {
 
@@ -20,7 +19,7 @@ class SplashFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = SplashFragmentBinding.inflate(inflater, container, false)
+        _binding = SplashFragmentBinding.inflate(inflater, container,false)
         return binding.root
     }
 
@@ -46,6 +45,13 @@ class SplashFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+}
+
+class SplashFragmentBinding {
+    companion object {
+        fun inflate(inflater: LayoutInflater, container: ViewGroup?, b: Boolean) = Unit
     }
 
 }
