@@ -6,19 +6,62 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity" >
+    android:background="@color/burgundy"
+    tools:context=".MainActivity">
 
-    <fragment
-        android:id="@+id/fragment"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:defaultNavHost="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+    <!-- Logo -->
+    <ImageView
+        android:id="@+id/activity_main_ivLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:importantForAccessibility="no"
+        android:paddingTop="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/activity_main_ivBG"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/nav_graph" />
+        app:srcCompat="@drawable/ic_logo_04" />
+
+    <!-- Main Content -->
+    <ImageView
+        android:id="@+id/activity_main_ivBG"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:importantForAccessibility="no"
+        app:layout_constraintBottom_toTopOf="@+id/activity_main_btnHome"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_main_ivLogo"
+        app:srcCompat="@android:drawable/screen_background_light" />
+
+
+    <!-- Bottom Navigation -->
+    <ImageButton
+        android:id="@+id/activity_main_btnHome"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:backgroundTint="@color/burgundy"
+        android:importantForAccessibility="no"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/activity_main_btnProfile"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_main_ivBG"
+        app:srcCompat="@drawable/ic_btn_home" />
+
+    <ImageButton
+        android:id="@+id/activity_main_btnProfile"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:backgroundTint="@color/burgundy"
+        android:importantForAccessibility="no"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/activity_main_btnHome"
+        app:layout_constraintTop_toBottomOf="@+id/activity_main_ivBG"
+        app:srcCompat="@drawable/ic_btn_profile" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
