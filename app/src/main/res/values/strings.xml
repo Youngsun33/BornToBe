@@ -29,4 +29,6 @@
     <string name="activity_main_tvInfo3">나만을 위한 스타일 분석을 경험해보고 싶다면?</string>
     <string name="activity_main_btnFaceAnalysis">얼굴형 분석</string>
     <string name="activity_main_btnBodyAnalysis">체형 분석</string>
+    <string name="activity_hand_analysis_btnImageUpload">이미지 업로드</string>
+    <string name="activity_hand_analysis_btnAnalysis">이미지 분석</string>
 </resources>
