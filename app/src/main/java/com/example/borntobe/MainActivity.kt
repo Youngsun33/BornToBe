@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         // "얼굴형 분석" 버튼에 클릭 리스너를 설정합니다.
         findViewById<Button>(R.id.buttonAnalyzeFace).setOnClickListener {
-            val intent = Intent(this, CameraActivity::class.java)
+            val intent = Intent(this, FaceAnalysisActivity::class.java)
             startActivity(intent)
         }
     }
