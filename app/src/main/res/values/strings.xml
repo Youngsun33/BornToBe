@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">BornToBe</string>
+    <!-- activity onboarding -->
+    <string name="activity_onboarding_tv01">\'나\'에 대해 \n 얼마나 잘 알고 있나요?</string>
+    <string name="activity_onboarding_tv02">이젠, 찍기만 하세요 \n 정확하게 분석해 드립니다</string>
+    <string name="activity_onboarding_tv03">더 멋있는 날 위해, \n 더 능력있는 날 위해</string>
+    <string name="activity_onboarding_tv04">사진 분석을 통한 \n 맞춤 스타일링 추천 서비스</string>
+    <string name="activity_onboarding_tv05">본투비와 함께 \n \'나\'를 찾는 모험 \n\n 준비되셨나요?</string>
+    <string name="activity_onboarding_btnStart">시작하기</string>
     <!-- activity sign in -->
     <string name="activity_sign_in_tvSignIn">로그인</string>
     <string name="activity_sign_in_etIDHint">ID</string>
