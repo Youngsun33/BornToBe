@@ -15,7 +15,10 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
+        ndk {
+            abiFilters.add("arm64-v8a")
+            abiFilters.add("armeabi")
+        }
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -49,11 +52,12 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
+    implementation(libs.tasks.vision)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation("com.google.mediapipe:tasks-vision:latest.release")
+
     // CNN알고리즘 사용을 위한 TensorFlow Lite 추가
     implementation("org.tensorflow:tensorflow-lite:+")
     // Import the Firebase BoM

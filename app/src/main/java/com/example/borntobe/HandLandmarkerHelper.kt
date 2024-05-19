@@ -62,7 +62,7 @@ class HandLandmarkerHelper(
             }
         }
         // 1. Create the task
-        baseOptionBuilder.setModelAssetPath(MP_HAND_LANDMARKER_TASK)
+        baseOptionBuilder.setModelAssetPath("hand_landmarker.task")
         val baseOptions = baseOptionBuilder.build()
         // 2. HandLandMarker 사용 위한 Options 설정
         val optionsBuilder =
@@ -80,39 +80,19 @@ class HandLandmarkerHelper(
 
     // Accepted a Bitmap and runs hand landmarker inference on it to return
     // results back to the caller
-    fun detectImage(image: Bitmap): ResultBundle? {
+    fun detectImage(image: Bitmap): HandLandmarkerResult? {
         if (runningMode != RunningMode.IMAGE) {
             throw IllegalArgumentException(
                 "Attempting to call detectImage" + " while not using RunningMode.IMAGE"
             )
         }
 
-        // Inference time is the difference between the system time at the
-        // start and finish of the process
-        val startTime = SystemClock.uptimeMillis()
-
         // Convert the input Bitmap object to an MPImage object to run inference
         // 4. 입력 값으로 받은 Bitmap 을 MPImage 로 변환
         val mpImage = BitmapImageBuilder(image).build()
 
         // Run hand landmarker using MediaPipe Hand Landmarker API
-        handLandmarker?.detect(mpImage)?.also { landmarkResult ->
-            val inferenceTimeMs = SystemClock.uptimeMillis() - startTime
-            return ResultBundle(
-                listOf(landmarkResult),
-                inferenceTimeMs,
-                image.height,
-                image.width
-            )
-        }
-
-        return null
+        // 5. LandMark 반환
+        return handLandmarker?.detect(mpImage)
     }
-
-    data class ResultBundle(
-        val results: List<HandLandmarkerResult>,
-        val inferenceTime: Long,
-        val inputImageHeight: Int,
-        val inputImageWidth: Int,
-    )
 }
