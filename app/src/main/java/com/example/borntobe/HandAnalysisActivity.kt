@@ -122,9 +122,6 @@ class HandAnalysisActivity : AppCompatActivity() {
             val resizedImg =
                 Bitmap.createScaledBitmap(image, ivImage.width, ivImage.height, true)
             val handLandMarkerResult = handLandmarkerHelper.detectImage(resizedImg)
-            val landmarks = handLandMarkerResult?.landmarks()
-            val x = landmarks?.get(0)?.get(12)?.x()
-            Log.i("HandResult", "x = $x")
             // 결과값이 null이 아니면 landmark 그려서 보여줌
             if (handLandMarkerResult != null) {
                 val canvas = Canvas(resizedImg)
