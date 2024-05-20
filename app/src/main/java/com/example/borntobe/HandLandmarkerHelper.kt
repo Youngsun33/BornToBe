@@ -2,7 +2,6 @@ package com.example.borntobe
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.os.SystemClock
 import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.tasks.core.BaseOptions
 import com.google.mediapipe.tasks.core.Delegate
@@ -62,7 +61,7 @@ class HandLandmarkerHelper(
             }
         }
         // 1. Create the task
-        baseOptionBuilder.setModelAssetPath("hand_landmarker.task")
+        baseOptionBuilder.setModelAssetPath(MP_HAND_LANDMARKER_TASK)
         val baseOptions = baseOptionBuilder.build()
         // 2. HandLandMarker 사용 위한 Options 설정
         val optionsBuilder =

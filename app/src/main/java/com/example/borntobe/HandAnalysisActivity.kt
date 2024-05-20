@@ -1,15 +1,13 @@
 package com.example.borntobe
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.graphics.Paint
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.util.AttributeSet
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
@@ -17,7 +15,6 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.createBitmap
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.borntobe.databinding.ActivityHandAnalysisBinding
@@ -101,29 +98,51 @@ class HandAnalysisActivity : AppCompatActivity() {
                 Log.i("PhotoPicker", "PhotoPicker False")
         }
 
+        // 손 분석을 위한 HandLandMarkerHelper 객체 생성
+        handLandmarkerHelper = HandLandmarkerHelper(context = this)
+
         // 분석 버튼 : 업로드 된 손 사진에서 land-mark 추출 & 각 부위별 길이 측정
         btnAnalysis = binding.activityHandAnalysisBtnAnalysis
         btnAnalysis.setOnClickListener {
-            // 손 분석을 위한 HandLandMarkerHelper 객체 생성
-            handLandmarkerHelper = HandLandmarkerHelper(context = this)
+            // 규격 이미지에서 LandMark 추출하여 결과 반환
+            // 1. asset 폴더에서 규격 이미지 읽어오기
+            val assetManager = resources.assets
+            val inputStream = assetManager.open("hand_analysis_standard.jpg")
+            val handAnalysisStandardBitmap = BitmapFactory.decodeStream(inputStream)
+            val resizedStandardBitmap = Bitmap.createScaledBitmap(
+                handAnalysisStandardBitmap,
+                ivImage.width,
+                ivImage.height,
+                true
+            )
+            // 2. 규격 이미지 손 분석 수행
+            val handStandardResult = handLandmarkerHelper.detectImage(resizedStandardBitmap)
+
             // 손 분석 결과로 추출된 LandMark 반환
-            val handLandMarkerResult = handLandmarkerHelper.detectImage(image)
+            val resizedImg =
+                Bitmap.createScaledBitmap(image, ivImage.width, ivImage.height, true)
+            val handLandMarkerResult = handLandmarkerHelper.detectImage(resizedImg)
+            val landmarks = handLandMarkerResult?.landmarks()
+            val x = landmarks?.get(0)?.get(12)?.x()
+            Log.i("HandResult", "x = $x")
             // 결과값이 null이 아니면 landmark 그려서 보여줌
             if (handLandMarkerResult != null) {
-                val resizedImg = Bitmap.createScaledBitmap(image, ivImage.width, ivImage.height, true)
                 val canvas = Canvas(resizedImg)
                 initPaints()
                 setResults(handLandMarkerResult, resizedImg.height, resizedImg.width)
                 draw(canvas)
                 ivImage.setImageBitmap(resizedImg)
 
-                utils.showToast("결과 사진 업로드 완료.")
+                val handAnalysisHelper = HandAnalysisHelper(handLandMarkerResult, handStandardResult!!)
+                handAnalysisHelper.classifier()
+                val bodyShape = handAnalysisHelper.analysisBodyShape()
+                utils.showToast("결과 사진 업로드 완료. 체형은 $bodyShape")
             } else
                 utils.showToast("분석을 수행할 수 없습니다.")
         }
     }
 
-    // ***** 추출한 LandMark를 이미지에 그리는 메소드 ******
+    // ***** 추출한 LandMark를 이미지에 그리는 메소드 모음 ******
     // 1. initPaints() : 초기값 설정 메소드
     private fun initPaints() {
         linePaint.color =
@@ -167,13 +186,16 @@ class HandAnalysisActivity : AppCompatActivity() {
     private fun draw(canvas: Canvas) {
         results?.let { handLandmarkerResult ->
             for (landmark in handLandmarkerResult.landmarks()) {
+                Log.i("landmark", "landmark = $landmark")
                 // 1. 추출된 LandMark를 점으로 표시
                 for (normalizedLandmark in landmark) {
+                    Log.i("normalizedlandmark", "normalizedlandmark = $normalizedLandmark")
                     canvas.drawPoint(
                         normalizedLandmark.x() * imageWidth * scaleFactor,
                         normalizedLandmark.y() * imageHeight * scaleFactor,
                         pointPaint
                     )
+                    Log.i("norX", "norX = ${normalizedLandmark.x()}")
                 }
                 // 2. LandMark들끼리 선으로 연결
                 HandLandmarker.HAND_CONNECTIONS.forEach {
