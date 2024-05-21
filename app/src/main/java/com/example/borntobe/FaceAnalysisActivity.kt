@@ -20,19 +20,19 @@ import com.google.mlkit.vision.face.FaceDetectorOptions
 import java.io.IOException
 import kotlin.math.pow
 
-            class FaceAnalysisActivity : AppCompatActivity() {
+class FaceAnalysisActivity : AppCompatActivity() {
 
-            private lateinit var detector: FaceDetector  // ML Kit 얼굴 인식 객체
-            private lateinit var imageView: ImageView   // 이미지를 표시할 뷰
-            private lateinit var buttonLoadImage: Button  // 이미지를 불러올 버튼
-            private lateinit var pickMedia: ActivityResultLauncher<String>  // 이미지 선택을 위한 런처
+    private lateinit var detector: FaceDetector  // ML Kit 얼굴 인식 객체
+    private lateinit var imageView: ImageView   // 이미지를 표시할 뷰
+    private lateinit var buttonLoadImage: Button  // 이미지를 불러올 버튼
+    private lateinit var pickMedia: ActivityResultLauncher<String>  // 이미지 선택을 위한 런처
 
-            override fun onCreate(savedInstanceState: Bundle?) {
-                super.onCreate(savedInstanceState)
-                setContentView(R.layout.activity_face_analysis)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_face_analysis)
 
-                imageView = findViewById(R.id.imageView)
-                buttonLoadImage = findViewById(R.id.buttonLoadImage)
+        imageView = findViewById(R.id.imageView)
+        buttonLoadImage = findViewById(R.id.buttonLoadImage)
 
         // 얼굴 인식 옵션 설정
         val faceDetectorOptions = FaceDetectorOptions.Builder()
@@ -99,7 +99,8 @@ import kotlin.math.pow
 
     // 두 점 사이의 거리를 계산하는 함수
     private fun distance(p1: PointF, p2: PointF): Float {
-        return Math.sqrt(((p2.x - p1.x).toDouble().pow(2.0) + (p2.y - p1.y).toDouble().pow(2.0))).toFloat()
+        return Math.sqrt(((p2.x - p1.x).toDouble().pow(2.0) + (p2.y - p1.y).toDouble().pow(2.0)))
+            .toFloat()
     }
 
     // 토스트 메시지를 띄우는 함수

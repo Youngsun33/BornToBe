@@ -7,9 +7,8 @@ import com.example.borntobe.databinding.OnboardingItemBinding
 
 class ViewPagerAdapter(private val imageList: ArrayList<Int>, private val textList: ArrayList<Int>) :
     RecyclerView.Adapter<ViewPagerAdapter.ViewHolder>() {
-    private lateinit var binding: OnboardingItemBinding
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        binding = OnboardingItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = OnboardingItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
