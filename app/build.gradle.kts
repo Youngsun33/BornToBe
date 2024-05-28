@@ -15,7 +15,10 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
+        ndk {
+            abiFilters.add("arm64-v8a")
+            abiFilters.add("armeabi")
+        }
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -47,19 +50,20 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.firebase.firestore)
+    // firebase 관련 lib
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics.ktx)
+    // mediapipe 관련 lib
+    implementation(libs.tasks.vision)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
     // CNN알고리즘 사용을 위한 TensorFlow Lite 추가
     implementation("org.tensorflow:tensorflow-lite:+")
-    // Import the Firebase BoM
-    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
-    // TODO: Add the dependencies for Firebase products you want to use
-    // When using the BoM, don't specify versions in Firebase dependencies
-    implementation("com.google.firebase:firebase-analytics")
-    // Add the dependencies for any other desired Firebase products
-    // https://firebase.google.com/docs/android/setup#available-libraries
+    implementation("com.google.mlkit:face-detection:16.0.6")
+    implementation("androidx.activity:activity:1.8.1")
 }
