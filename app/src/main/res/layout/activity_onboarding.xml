@@ -6,9 +6,114 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".OnboardingActivity">
-
+    <!-- page indicator  -->
+    <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+        android:id="@+id/activity_onboarding_dotsIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="30dp"
+        app:dotsColor="@color/burgundy"
+        app:dotsCornerRadius="8dp"
+        app:dotsSize="16dp"
+        app:dotsSpacing="4dp"
+        app:dotsWidthFactor="2.5"
+        app:layout_constraintBottom_toTopOf="@+id/activity_onboarding_viewPager"
+        app:layout_constraintEnd_toEndOf="@+id/activity_onboarding_viewPager"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:progressMode="true"
+        app:selectedDotColor="@color/burgundy" />
+    <!-- viewpager -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/activity_onboarding_viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/activity_onboarding_ll"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_onboarding_dotsIndicator" />
+    <!-- next button -->
+    <LinearLayout
+        android:id="@+id/activity_onboarding_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="50dp"
+        android:gravity="center"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/activity_onboarding_cl"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_onboarding_viewPager">
+
+        <TextView
+            android:id="@+id/activity_onboarding_tvStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:text="@string/activity_onboarding_tvStart"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/activity_onboarding_btnStart"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@android:color/transparent"
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_btn_next" />
+    </LinearLayout>
+    <!-- Move to SignIn & SignUp Page Button -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/activity_onboarding_cl"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/burgundy"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_onboarding_ll">
+
+        <android.widget.Button
+            android:id="@+id/activity_onboarding_btnSignIn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/burgundy"
+            android:text="@string/activity_onboarding_tvSignIn"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/activity_onboarding_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/activity_onboarding_view"
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/activity_onboarding_btnSignUp"
+            app:layout_constraintStart_toEndOf="@+id/activity_onboarding_btnSignIn"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.widget.Button
+            android:id="@+id/activity_onboarding_btnSignUp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/burgundy"
+            android:text="@string/activity_onboarding_tvSignUp"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/activity_onboarding_view"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

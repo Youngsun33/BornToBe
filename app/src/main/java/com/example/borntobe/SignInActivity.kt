@@ -43,6 +43,9 @@ class SignInActivity : AppCompatActivity() {
         userID = binding.activitySignInEtID
         userPW = binding.activitySignInEtPW
         btnSignIn.setOnClickListener {
+            // 화면 전환 검사를 위해 임시적으로 화면 전환 코드 추가
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
             // 입력 검사
             val id = userID.text.toString()
             val pw = userPW.text.toString()

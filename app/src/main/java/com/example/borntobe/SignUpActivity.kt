@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -58,6 +59,9 @@ class SignUpActivity : AppCompatActivity() {
         userPWCheck = binding.activitySignUpEtPWCheck
         userName = binding.activitySignUpEtUserName
         btnSignUp.setOnClickListener {
+            // 화면 전환 검사를 위해 임시적으로 화면 전환 코드 추가
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
             // 입력 검사
             val id = userID.text.toString()
             val pw = userPW.text.toString()
@@ -94,7 +98,7 @@ class SignUpActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         }
-
+        
         // ID EditText : TextWatcher 연결하여 실시간 유효성 검사
         userID.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -102,7 +106,8 @@ class SignUpActivity : AppCompatActivity() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 // 텍스트 변경될 때마다 호출 : 실시간으로 입력 값 검사 가능
-                utils.isRegularID(userID.text.toString().trim(), userID)
+                if (userID.text.isNotEmpty())
+                    utils.isRegularID(userID.text.toString().trim(), userID)
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -116,7 +121,8 @@ class SignUpActivity : AppCompatActivity() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 // 텍스트 변경될 때마다 호출 : 실시간으로 입력 값 검사 가능
-                utils.isRegularPW(userPW.text.toString().trim(), userPW)
+                if (userPW.text.isNotEmpty())
+                    utils.isRegularPW(userPW.text.toString().trim(), userPW)
             }
 
             override fun afterTextChanged(p0: Editable?) {

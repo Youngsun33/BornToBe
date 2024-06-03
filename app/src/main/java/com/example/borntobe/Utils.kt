@@ -1,6 +1,7 @@
 package com.example.borntobe
 
 import android.content.Context
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
@@ -50,6 +51,8 @@ class Utils(private val context: Context) {
         val idPattern2 = "^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]{2,}$"
         val isMatch1 = Pattern.matches(idPattern1, id)
         val isMatch2 = Pattern.matches(idPattern2, id)
+        Log.i("isMatch", "isMatch1 = $isMatch1")
+        Log.i("isMatch", "isMatch2 = $isMatch2")
         return if (isMatch1 || isMatch2) {
             editText.setBackgroundResource(R.drawable.bg_round_square_stroke_gray)
             true

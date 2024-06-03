@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.borntobe"
-        minSdk = 26
+        minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -44,7 +44,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -61,6 +60,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    // indicator lib : onboarding 화면에서 사용하기 위한 dot indicator 관련 lib
+    implementation(libs.dotsindicator)
 
     // CNN알고리즘 사용을 위한 TensorFlow Lite 추가
     implementation("org.tensorflow:tensorflow-lite:+")
