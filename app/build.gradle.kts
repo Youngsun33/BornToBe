@@ -14,13 +14,12 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-<<<<<<<<< Temporary merge branch 1
-=========
+
         ndk {
             abiFilters.add("arm64-v8a")
             abiFilters.add("armeabi")
         }
->>>>>>>>> Temporary merge branch 2
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -43,26 +42,20 @@ android {
 }
 
 dependencies {
-<<<<<<<<< Temporary merge branch 1
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("com.google.android.material:material:1.5.0")
     implementation("androidx.activity:activity-ktx:1.6.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
     implementation("org.tensorflow:tensorflow-lite:2.7.0")
-=========
+    implementation("org.tensorflow:tensorflow-lite-support:0.1.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    // firebase 관련 lib
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.auth.ktx)
-    implementation(libs.firebase.firestore)
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics.ktx)
+
     // mediapipe 관련 lib
     implementation(libs.tasks.vision)
     testImplementation(libs.junit)
@@ -71,9 +64,9 @@ dependencies {
 
 
     // CNN알고리즘 사용을 위한 TensorFlow Lite 추가
-    implementation("org.tensorflow:tensorflow-lite:+")
+    implementation("org.tensorflow:tensorflow-lite:2.7.0")
+    implementation("org.tensorflow:tensorflow-lite-support:0.1.0")
     // Import the Firebase BoM
->>>>>>>>> Temporary merge branch 2
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
