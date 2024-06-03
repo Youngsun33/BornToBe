@@ -72,7 +72,6 @@
         android:layout_height="100dp"
         android:background="@color/burgundy"
         android:orientation="horizontal"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

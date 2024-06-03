@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,33 +19,52 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.borntobe.databinding.ActivityHandAnalysisBinding
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarker
 import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarkerResult
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.system.exitProcess
 
 class HandAnalysisActivity : AppCompatActivity() {
     companion object {
         private const val LANDMARK_STROKE_WIDTH = 8F
     }
-
+    // HandLandMark Detection 관련 변수
     private var results: HandLandmarkerResult? = null
     private var linePaint = Paint()
     private var pointPaint = Paint()
-
     private var scaleFactor: Float = 1f
     private var imageWidth: Int = 1
     private var imageHeight: Int = 1
 
     // ViewBinding 사용
     private lateinit var binding: ActivityHandAnalysisBinding
+    // 위젯 변수
     private lateinit var ivImage: ImageView
     private lateinit var btnImageUpload: Button
     private lateinit var btnAnalysis: Button
     private lateinit var image: Bitmap
     private lateinit var handLandmarkerHelper: HandLandmarkerHelper
     private val utils: Utils = Utils(this)
+    private lateinit var db: FirebaseFirestore
+
+    // onBackPressedCallback : 뒤로 가기 동작을 정의하는 callback 메소드
+    private var backKeyPressedTime = 0L
+    private val onBackPressedCallback: OnBackPressedCallback = object: OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            // 사용자가 2초 이내에 뒤로 가기 버튼을 한 번 더 클릭하면 화면 종료
+            if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+                backKeyPressedTime = System.currentTimeMillis()
+                utils.showToast("뒤로가기를 한번 더 누르면 종료됩니다.")
+            } else {
+                exitProgram()
+            }
+        }
+    }
 
     // isPhotoPickerAvailable : 사진 선택 도구가 사용 가능한 기기 인지 확인
     private val isPhotoPickerAvailable =
@@ -84,6 +104,11 @@ class HandAnalysisActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        // db 객체 생성
+        db = Firebase.firestore
+        // 뒤로 가기 버튼 동작 정의
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         // 이미지 업로드 버튼 : 갤러리에서 사진을 가져와 ImageView에 띄움
         ivImage = binding.activityHandAnalysisIvImage
@@ -134,6 +159,35 @@ class HandAnalysisActivity : AppCompatActivity() {
                 handAnalysisHelper.classifier()
                 val bodyShape = handAnalysisHelper.analysisBodyShape()
                 utils.showToast("결과 사진 업로드 완료. 체형은 $bodyShape")
+                // 현재 사용자 ID 가져오기
+                val dataStore = DataStoreModule(this)
+                val userID = dataStore.userIDFlow.toString()
+                // 현재 사용자가 DB에 존재하는지 검사
+                var isNotExistID = false
+                db.collection("users")
+                    .whereEqualTo("id", userID)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        isNotExistID = documents.isEmpty
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.w("signUp", "Error getting documents: ", exception)
+                    }
+                if (!isNotExistID) {
+                    // DB에 사용자 체형 결과 저장
+                    val data = hashMapOf(
+                        "body_shape" to bodyShape
+                    )
+                    db.collection("users")
+                        .add(data)
+                        .addOnSuccessListener { documentReference ->
+                            Log.d("HandAnalysis", "DocumentSnapshot written with ID: ${documentReference.id}")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w("HandAnalysis", "Error adding document", e)
+                        }
+                } else
+                    utils.showToast("사용자 정보가 데이터베이스에 존재하지 않습니다.")
             } else
                 utils.showToast("분석을 수행할 수 없습니다.")
         }
@@ -210,5 +264,15 @@ class HandAnalysisActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    // exitProgram() : App을 완전히 종료하는 메소드
+    private fun exitProgram() {
+        // 태스크를 백그라운드로 이동
+        moveTaskToBack(true)
+        // 액티비티 종료 + 태스크 리스트에서 지우기
+        finishAndRemoveTask()
+        // App Process 종료
+        exitProcess(0)
     }
 }

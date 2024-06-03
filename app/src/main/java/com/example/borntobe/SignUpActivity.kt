@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -15,12 +16,20 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.borntobe.databinding.ActivitySignUpBinding
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlin.system.exitProcess
 
-/** 회원 가입 화면
- * 개발 담당 : 박은진 */
+/** SignUp 클래스 :
+ *  신규 사용자를 위한 회원 가입 화면 */
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
-    private lateinit var db: Firebase
+    private lateinit var db: FirebaseFirestore
+    private var isExistID = false
+    private var isBtnIDCheckClick = false
 
     // 위젯 변수들
     private lateinit var userID: EditText
@@ -28,8 +37,24 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var userPWCheck: EditText
     private lateinit var userName: EditText
     private lateinit var btnSignUp: Button
+    private lateinit var btnIDCheck: Button
     private lateinit var btnCancel: ImageButton
     private lateinit var utils: Utils
+
+    // onBackPressedCallback : 뒤로 가기 동작을 정의하는 callback 메소드
+    private var backKeyPressedTime = 0L
+    private val onBackPressedCallback: OnBackPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // 사용자가 2초 이내에 뒤로 가기 버튼을 한 번 더 클릭하면 화면 종료
+                if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+                    backKeyPressedTime = System.currentTimeMillis()
+                    utils.showToast("뒤로가기를 한번 더 누르면 종료됩니다.")
+                } else {
+                    exitProgram()
+                }
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +69,10 @@ class SignUpActivity : AppCompatActivity() {
         }
         // utils 객체 생성
         utils = Utils(this)
+        // db 객체 생성
+        db = Firebase.firestore
+        // 뒤로 가기 버튼 동작 정의
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         // 취소 버튼 : 로그인 화면으로 돌아감
         btnCancel = binding.activitySignUpBtnCancel
@@ -59,9 +88,6 @@ class SignUpActivity : AppCompatActivity() {
         userPWCheck = binding.activitySignUpEtPWCheck
         userName = binding.activitySignUpEtUserName
         btnSignUp.setOnClickListener {
-            // 화면 전환 검사를 위해 임시적으로 화면 전환 코드 추가
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
             // 입력 검사
             val id = userID.text.toString()
             val pw = userPW.text.toString()
@@ -73,32 +99,86 @@ class SignUpActivity : AppCompatActivity() {
             val isPWChkBlank = pwChk.isBlank()
             val isNameBlank = name.isBlank()
             // 입력 유효성 검사
-            if (isIDBlank)
+            if (isIDBlank) {
                 utils.showToast("ID를 입력해주세요.")
-            else if (isPWBlank)
+            } else if (isPWBlank) {
                 utils.showToast("비밀번호를 입력해주세요.")
-            else if (isPWChkBlank)
+            } else if (isPWChkBlank) {
                 utils.showToast("비밀번호를 다시 한 번 입력해주세요.")
-            else if (isNameBlank)
+            } else if (isNameBlank) {
                 utils.showToast("닉네임을 입력해주세요.")
-            else if (!utils.isRegularID(id, userID))
-                utils.showToast("ID를 확인해주세요. ID는 6자 이상의 영문 혹은 영문과 숫자의 조합이어야 합니다.")
-            else if (!utils.isRegularPW(pw, userPW))
+            } else if (!utils.isRegularID(id, userID)) {
+                utils.showToast("ID를 확인해주세요. \n ID는 6자 이상의 영문 혹은 영문과 숫자의 조합이어야 합니다.")
+            } else if (!utils.isRegularPW(pw, userPW)) {
                 utils.showToast("비밀번호는 영문, 숫자, 특수문자(!@#$%?_) 조합의 8~16자이어야 합니다.")
-            else if (pw != pwChk) {
+            } else if (pw != pwChk) {
                 userPWCheck.setBackgroundResource(R.drawable.bg_round_square_stroke_red)
-                utils.showToast("입력하신 비밀번호가 서로 다릅니다. 비밀번호를 한 번 더 확인해주세요.")
-            }
-            // 회원 가입
-            else {
+                utils.showToast("입력하신 비밀번호가 서로 다릅니다. \n 비밀번호를 한 번 더 확인해주세요.")
+            } else if (!isBtnIDCheckClick) {
+                utils.showToast("ID 중복 검사를 해주세요.")
+            } else if (isExistID) {
+                utils.showToast("이미 존재하는 ID 입니다.")
+                // 회원 가입
+            } else {
                 // DB에 사용자 정보 저장
+                // Add a new document with a generated id.
+                val data = hashMapOf(
+                    "id" to id,
+                    "pw" to pw,
+                    "name" to name,
+                    "face_shape" to null,
+                    "body_shape" to null
+                )
+
+                db.collection("users")
+                    .add(data)
+                    .addOnSuccessListener { documentReference ->
+                        Log.d("signUp", "DocumentSnapshot written with ID: ${documentReference.id}")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("signUp", "Error adding document", e)
+                    }
+
+                // DataStoreModule() : 자동 로그인을 위한 datastore 객체 생성
+                val dataStore = DataStoreModule(this)
+                CoroutineScope(Dispatchers.IO).launch {
+                    dataStore.saveUserID(id)
+                    dataStore.saveUserPW(pw)
+                    dataStore.saveUserName(name)
+                    dataStore.saveAutoLoginState(state = true)
+                }
 
                 // 로그인 : 메인 화면 전환
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
+                finish()
             }
         }
-        
+
+        // ID 중복 검사 버튼 : 사용자 ID 중복 검사
+        btnIDCheck = binding.activitySignUpBtnIDCheck
+        btnIDCheck.setOnClickListener {
+            isBtnIDCheckClick = true
+            val id = userID.text.toString()
+            // 사용자가 입력한 ID와 중복 되는 ID가 존재하는지 검사
+            db.collection("users")
+                .whereEqualTo("id", id)
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (!documents.isEmpty) {
+                        isExistID = true
+                        isBtnIDCheckClick = false
+                        utils.showToast("이미 존재하는 ID 입니다.")
+                    } else {
+                        isExistID = false
+                        utils.showToast("사용 가능한 ID 입니다.")
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.w("signUp", "Error getting documents: ", exception)
+                }
+        }
+
         // ID EditText : TextWatcher 연결하여 실시간 유효성 검사
         userID.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -151,5 +231,15 @@ class SignUpActivity : AppCompatActivity() {
         binding.root.setOnClickListener {
             utils.hideKeyboard()
         }
+    }
+
+    // exitProgram() : App을 완전히 종료하는 메소드
+    private fun exitProgram() {
+        // 태스크를 백그라운드로 이동
+        moveTaskToBack(true)
+        // 액티비티 종료 + 태스크 리스트에서 지우기
+        finishAndRemoveTask()
+        // App Process 종료
+        exitProcess(0)
     }
 }

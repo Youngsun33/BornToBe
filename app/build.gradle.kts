@@ -46,9 +46,9 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.material)
     // firebase 관련 lib
     implementation(libs.firebase.auth)
     implementation(libs.firebase.auth.ktx)
@@ -57,14 +57,15 @@ dependencies {
     implementation(libs.firebase.analytics.ktx)
     // mediapipe 관련 lib
     implementation(libs.tasks.vision)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.preferences.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    // ml-kit 관련 lib
+    implementation(libs.face.detection)
     // indicator lib : onboarding 화면에서 사용하기 위한 dot indicator 관련 lib
     implementation(libs.dotsindicator)
-
-    // CNN알고리즘 사용을 위한 TensorFlow Lite 추가
-    implementation("org.tensorflow:tensorflow-lite:+")
-    implementation("com.google.mlkit:face-detection:16.0.6")
-    implementation("androidx.activity:activity:1.8.1")
+    // CNN알고리즘 사용위한 tensorflow lib
+    implementation(libs.tensorflow.lite)
 }

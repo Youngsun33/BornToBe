@@ -1,15 +1,16 @@
 package com.example.borntobe
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import com.google.firebase.auth.FirebaseAuth
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import kotlinx.coroutines.flow.map
 
 
 class SplashActivity : AppCompatActivity() {
-
     private val SPLASH_TIME_OUT: Long = 3000 // 3초
+    private lateinit var userName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,8 +18,16 @@ class SplashActivity : AppCompatActivity() {
 
         // 3초 후 다음 화면
         Handler().postDelayed({
+            var flag = false
+            // DataStoreModule() : 자동 로그인을 위한 datastore 객체 생성
+            val dataStore = DataStoreModule(this)
+            val autoLoginState = dataStore.autoLoginState.map {
+                flag = it
+            }
+            Log.i("datastore", "flag = $flag")
+            Log.i("datastore", "autoLoginState = $autoLoginState")
             // 로그인 여부
-            if (isUserLoggedIn()) {
+            if (flag) {
                 // 로그인 -> 메인 화면
                 startActivity(Intent(this, MainActivity::class.java))
             } else {
@@ -28,12 +37,5 @@ class SplashActivity : AppCompatActivity() {
             // 현재 액티비티 종료
             finish()
         }, SPLASH_TIME_OUT)
-    }
-
-    private fun isUserLoggedIn(): Boolean {
-        // FirebaseAuth를 사용
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        // 사용자 로그인 여부 확인
-        return currentUser != null
     }
 }
