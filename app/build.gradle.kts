@@ -14,20 +14,20 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+<<<<<<<<< Temporary merge branch 1
+=========
         ndk {
             abiFilters.add("arm64-v8a")
             abiFilters.add("armeabi")
         }
+>>>>>>>>> Temporary merge branch 2
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-        release {
+        getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {
@@ -43,30 +43,37 @@ android {
 }
 
 dependencies {
+<<<<<<<<< Temporary merge branch 1
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("com.google.android.material:material:1.5.0")
     implementation("androidx.activity:activity-ktx:1.6.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
     implementation("org.tensorflow:tensorflow-lite:2.7.0")
-
-    implementation ("org.tensorflow:tensorflow-lite-support:0.1.0")
+=========
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.firebase.firestore)
+    // firebase 관련 lib
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics.ktx)
+    // mediapipe 관련 lib
     implementation(libs.tasks.vision)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+
     // CNN알고리즘 사용을 위한 TensorFlow Lite 추가
     implementation("org.tensorflow:tensorflow-lite:+")
     // Import the Firebase BoM
+>>>>>>>>> Temporary merge branch 2
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
@@ -76,5 +83,4 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-
 }
