@@ -70,6 +70,8 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bg_round_square_stroke_gray"
         android:digits="@string/digits_ID"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:hint="@string/activity_sign_up_etIDHint"
         android:importantForAutofill="no"
         android:inputType="text"

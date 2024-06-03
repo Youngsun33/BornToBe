@@ -6,7 +6,9 @@
     <string name="activity_onboarding_tv03">더 멋있는 날 위해, \n 더 능력있는 날 위해</string>
     <string name="activity_onboarding_tv04">사진 분석을 통한 \n 맞춤 스타일링 추천 서비스</string>
     <string name="activity_onboarding_tv05">본투비와 함께 \n \'나\'를 찾는 모험 \n\n 준비되셨나요?</string>
-    <string name="activity_onboarding_btnStart">시작하기</string>
+    <string name="activity_onboarding_tvStart">시작하기</string>
+    <string name="activity_onboarding_tvSignIn">기존 사용자 \n 로그인</string>
+    <string name="activity_onboarding_tvSignUp">신규 사용자 \n 회원가입</string>
     <!-- activity sign in -->
     <string name="activity_sign_in_tvSignIn">로그인</string>
     <string name="activity_sign_in_etIDHint">ID</string>

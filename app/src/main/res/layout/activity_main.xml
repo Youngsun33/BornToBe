@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -7,17 +8,6 @@
     android:layout_height="match_parent"
     android:background="@color/burgundy"
     tools:context=".MainActivity">
-
-    <!-- GLSurfaceView for OpenGL ES Rendering -->
-    <android.opengl.GLSurfaceView
-        android:id="@+id/glSurfaceView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintBottom_toTopOf="@+id/activity_main_ivLogo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Logo -->
     <ImageView
@@ -32,9 +22,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_logo_04" />
 
-    <!-- Main Content -->
-
-    <!-- Bottom Navigation -->
     <ImageView
         android:id="@+id/activity_main_ivBG"
         android:layout_width="match_parent"
@@ -43,12 +30,44 @@
         android:importantForAccessibility="no"
         app:layout_constraintBottom_toTopOf="@+id/activity_main_btnHome"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activity_main_ivLogo"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@android:drawable/screen_background_light" />
 
+    <!-- GLSurfaceView for OpenGL ES Rendering -->
+    <android.opengl.GLSurfaceView
+        android:id="@+id/activity_main_glSurfaceView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintBottom_toTopOf="@+id/activity_main_btnAnalysisFace"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/activity_main_ivBG" />
+
+    <!-- Main Content -->
+    <Button
+        android:id="@+id/activity_main_btnAnalysisFace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="얼굴형 분석하기"
+        app:layout_constraintBottom_toTopOf="@id/activity_main_btnAnalysisHand"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_main_glSurfaceView" />
+
+    <Button
+        android:id="@+id/activity_main_btnAnalysisHand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="손을 통한 체형 분석"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_main_ivBG"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/activity_main_btnAnalysisFace" />
+
+    <!-- Bottom Navigation -->
     <ImageButton
         android:id="@+id/activity_main_btnHome"
         android:layout_width="50dp"
@@ -60,17 +79,6 @@
         app:layout_constraintEnd_toStartOf="@+id/activity_main_btnProfile"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_btn_home" />
-
-
-    <Button
-        android:id="@+id/buttonAnalyzeFace"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="얼굴형 분석하기"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/activity_main_btnHome"
-        tools:layout_editor_absoluteY="533dp" />
 
     <ImageButton
         android:id="@+id/activity_main_btnProfile"
