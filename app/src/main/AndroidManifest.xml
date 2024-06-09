@@ -18,35 +18,44 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BornToBe"
         tools:targetApi="31">
-
         <activity
             android:name=".SplashActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".OnboardingActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SignInActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SignUpActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".HandAnalysisActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".FaceAnalysisActivity"
-            android:exported="false" />
-
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ResultActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

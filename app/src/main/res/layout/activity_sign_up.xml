@@ -5,215 +5,247 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".SignUpActivity">
 
     <ImageButton
         android:id="@+id/activity_sign_up_btnCancel"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:background="@color/white"
         android:importantForAccessibility="no"
-        android:src="@drawable/ic_btn_cancel"
-        app:layout_constraintBottom_toTopOf="@+id/view"
-        app:layout_constraintStart_toStartOf="@+id/view"
+        android:src="@drawable/baseline_clear_24"
+        app:layout_constraintBottom_toTopOf="@+id/activity_sign_up_line"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/activity_sign_up_tvSignUp"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginTop="30dp"
+        android:layout_height="wrap_content"
         android:fontFamily="@font/inter_bold"
         android:gravity="center"
         android:text="@string/activity_sign_up_tvSignUp"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/view"
+        app:layout_constraintBottom_toTopOf="@+id/activity_sign_up_line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:id="@+id/view"
+        android:id="@+id/activity_sign_up_line"
         android:layout_width="320dp"
         android:layout_height="2dp"
-        android:layout_marginTop="15dp"
         android:background="@color/black"
-        app:layout_constraintBottom_toTopOf="@+id/activity_sign_up_tvID"
+        app:layout_constraintBottom_toTopOf="@+id/activity_sign_up_form"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activity_sign_up_tvSignUp" />
 
-    <!-- ID -->
-    <TextView
-        android:id="@+id/activity_sign_up_tvID"
+
+    <!-- User Info Form -->
+    <LinearLayout
+        android:id="@+id/activity_sign_up_form"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:fontFamily="@font/inter_bold"
-        android:text="@string/activity_sign_up_tvID"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/activity_sign_up_etID"
-        app:layout_constraintStart_toStartOf="@+id/activity_sign_up_etID"
-        app:layout_constraintTop_toBottomOf="@+id/view" />
-
-    <EditText
-        android:id="@+id/activity_sign_up_etID"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_round_square_stroke_gray"
-        android:digits="@string/digits_ID"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:hint="@string/activity_sign_up_etIDHint"
-        android:importantForAutofill="no"
-        android:inputType="text"
-        android:maxLines="1"
-        android:padding="15dp"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_sign_up_tvID"
-        tools:ignore="TextContrastCheck" />
-
-    <!-- PW -->
-
-    <TextView
-        android:id="@+id/activity_sign_up_tvIDInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
         android:gravity="center"
-        android:text="@string/activity_sign_up_tvIDInfo"
-        android:textColor="@color/black"
-        android:textSize="10sp"
-        app:layout_constraintEnd_toStartOf="@+id/activity_sign_up_btnIDCheck"
-        app:layout_constraintStart_toStartOf="@+id/activity_sign_up_etID"
-        app:layout_constraintTop_toBottomOf="@+id/activity_sign_up_etID" />
-
-    <Button
-        android:id="@+id/activity_sign_up_btnIDCheck"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:backgroundTint="@color/burgundy"
-        android:text="@string/activity_sign_up_btnIDCheck"
-        app:layout_constraintEnd_toEndOf="@+id/activity_sign_up_etID"
-        app:layout_constraintStart_toEndOf="@+id/activity_sign_up_tvIDInfo"
-        app:layout_constraintTop_toBottomOf="@+id/activity_sign_up_etID" />
-
-    <TextView
-        android:id="@+id/activity_sign_up_tvPW"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/inter_bold"
-        android:text="@string/activity_sign_up_tvPW"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/activity_sign_up_etPW"
-        app:layout_constraintStart_toStartOf="@+id/activity_sign_up_etPW"
-        app:layout_constraintTop_toBottomOf="@+id/activity_sign_up_tvIDInfo" />
-
-    <EditText
-        android:id="@+id/activity_sign_up_etPW"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_round_square_stroke_gray"
-        android:digits="@string/digits_PW"
-        android:hint="@string/activity_sign_up_etPWHint"
-        android:importantForAutofill="no"
-        android:inputType="text"
-        android:maxLines="1"
-        android:padding="15dp"
-        android:textColor="@color/black"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_sign_up_tvPW"
-        tools:ignore="TextContrastCheck" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <!-- PW Check -->
-    <TextView
-        android:id="@+id/activity_sign_up_tvPWCheck"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:fontFamily="@font/inter_bold"
-        android:text="@string/activity_sign_up_tvPWCheck"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/activity_sign_up_etPWCheck"
-        app:layout_constraintStart_toStartOf="@+id/activity_sign_up_etPWCheck"
-        app:layout_constraintTop_toBottomOf="@+id/activity_sign_up_etPW" />
+        <!-- Text -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp">
 
-    <EditText
-        android:id="@+id/activity_sign_up_etPWCheck"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_round_square_stroke_gray"
-        android:digits="@string/digits_PW"
-        android:hint="@string/activity_sign_up_etPWCheck"
-        android:importantForAutofill="no"
-        android:inputType="text"
-        android:maxLines="1"
-        android:padding="15dp"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_sign_up_tvPWCheck"
-        tools:ignore="TextContrastCheck" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_sign_up_tvInfo01"
+                android:textColor="@color/blue"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-    <!-- NickName -->
-    <TextView
-        android:id="@+id/activity_sign_up_tvUserName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:fontFamily="@font/inter_bold"
-        android:text="@string/activity_sign_up_tvUserName"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/activity_sign_up_etUserName"
-        app:layout_constraintStart_toStartOf="@+id/activity_sign_up_etUserName"
-        app:layout_constraintTop_toBottomOf="@+id/activity_sign_up_etPWCheck" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_sign_up_tvInfo02"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
-    <EditText
-        android:id="@+id/activity_sign_up_etUserName"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_round_square_stroke_gray"
-        android:digits="@string/digits_ID"
-        android:hint="@string/activity_sign_up_etUserNameHint"
-        android:importantForAutofill="no"
-        android:inputType="text"
-        android:maxLines="1"
-        android:padding="15dp"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_sign_up_tvUserName"
-        tools:ignore="TextContrastCheck" />
+        <!-- NickName Form -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <android.widget.Button
-        android:id="@+id/activity_sign_up_btnSignUp"
-        android:layout_width="320dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="50dp"
-        android:background="@drawable/bg_round_square_burgundy"
-        android:text="@string/activity_sign_up_btnSignUp"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_sign_up_etUserName"
-        tools:ignore="DuplicateSpeakableTextCheck" />
+            <TextView
+                android:id="@+id/activity_sign_up_tvUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:text="@string/activity_sign_up_tvUserName"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/activity_sign_up_etUserName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/gray"
+                android:digits="@string/digits_ID"
+                android:hint="@string/activity_sign_up_etUserNameHint"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                tools:ignore="TextContrastCheck" />
+
+        </LinearLayout>
+
+        <!-- ID Form -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/activity_sign_up_tvID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/inter_bold"
+                    android:gravity="center"
+                    android:text="@string/activity_sign_up_tvID"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/activity_sign_up_btnIDCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+                    android:text="@string/activity_sign_up_btnIDCheck"
+                    android:textColor="@color/blue" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/activity_sign_up_etID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/gray"
+                android:digits="@string/digits_ID"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/activity_sign_up_tvIDInfo"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                tools:ignore="TextContrastCheck" />
+        </LinearLayout>
+
+        <!-- PW Form  -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/activity_sign_up_tvPW"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:text="@string/activity_sign_up_tvPW"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/activity_sign_up_etPW"
+                app:layout_constraintStart_toStartOf="@+id/activity_sign_up_etPW"
+                app:layout_constraintTop_toBottomOf="@+id/activity_sign_up_tvIDInfo" />
+
+            <EditText
+                android:id="@+id/activity_sign_up_etPW"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/gray"
+                android:digits="@string/digits_PW"
+                android:hint="@string/activity_sign_up_etPWHint"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activity_sign_up_tvPW"
+                tools:ignore="TextContrastCheck" />
+        </LinearLayout>
+
+        <!-- PW Check Form -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/activity_sign_up_tvPWCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:text="@string/activity_sign_up_tvPWCheck"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/activity_sign_up_etPWCheck"
+                app:layout_constraintStart_toStartOf="@+id/activity_sign_up_etPWCheck"
+                app:layout_constraintTop_toBottomOf="@+id/activity_sign_up_etPW" />
+
+            <EditText
+                android:id="@+id/activity_sign_up_etPWCheck"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/gray"
+                android:digits="@string/digits_PW"
+                android:hint="@string/activity_sign_up_etPWCheck"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                tools:ignore="TextContrastCheck" />
+        </LinearLayout>
+
+        <android.widget.Button
+            android:id="@+id/activity_sign_up_btnSignUp"
+            android:layout_width="320dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_round_square_gray"
+            android:text="@string/activity_sign_up_btnSignUp"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="DuplicateSpeakableTextCheck" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

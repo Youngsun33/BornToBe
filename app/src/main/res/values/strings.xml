@@ -9,17 +9,28 @@
     <string name="activity_onboarding_tvStart">시작하기</string>
     <string name="activity_onboarding_tvSignIn">기존 사용자 \n 로그인</string>
     <string name="activity_onboarding_tvSignUp">신규 사용자 \n 회원가입</string>
+
     <!-- activity sign in -->
-    <string name="activity_sign_in_tvSignIn">로그인</string>
+    <string name="activity_sign_in_tvSignIn01">진짜</string>
+    <string name="activity_sign_in_tvSignIn02">나</string>
+    <string name="activity_sign_in_tvSignIn03">를 찾는 시간</string>
+    <string name="activity_sign_in_tvSignIn04">본투비와 함께하세요.</string>
+    <string name="activity_sign_in_tvID">아이디</string>
+    <string name="activity_sign_in_tvPW">비밀번호</string>
     <string name="activity_sign_in_etIDHint">ID</string>
     <string name="activity_sign_in_etPWHint">PW</string>
+    <string name="activity_sign_in_btnSignIn">로그인</string>
+    <string name="activity_sign_in_chkAutoLogin">자동 로그인</string>
     <string name="activity_sign_in_tvInfo">아직 회원이 아니신가요?</string>
     <string name="activity_sign_in_btnSignUp">회원가입</string>
+
     <!-- activity sign up -->
     <string name="activity_sign_up_tvSignUp">회원 가입</string>
+    <string name="activity_sign_up_tvInfo01">나</string>
+    <string name="activity_sign_up_tvInfo02">에 대해 알려주세요.</string>
     <string name="activity_sign_up_tvID">아이디</string>
     <string name="activity_sign_up_etIDHint">예 : borntobe1</string>
-    <string name="activity_sign_up_tvIDInfo">6자 이상의 영문 혹은 영문과 숫자를 조합해주세요.</string>
+    <string name="activity_sign_up_tvIDInfo">6자 이상의 영문 혹은 영문과 숫자 조합</string>
     <string name="activity_sign_up_btnIDCheck">중복 검사</string>
     <string name="activity_sign_up_tvPW">비밀번호</string>
     <string name="activity_sign_up_etPWHint">비밀번호를 입력해 주세요.</string>
@@ -27,17 +38,54 @@
     <string name="activity_sign_up_etPWCheck">비밀번호를 한번 더 입력해 주세요.</string>
     <string name="activity_sign_up_tvUserName">닉네임</string>
     <string name="activity_sign_up_etUserNameHint">예 : 본투비</string>
-    <string name="activity_sign_up_btnSignUp">다음</string>
+    <string name="activity_sign_up_btnSignUp">회원 가입</string>
+
     <!-- ID, PW Digits -->
     <string name="digits_ID">0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM</string>
     <string name="digits_PW">0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM!@#$%?_</string>
+
     <!-- activity main -->
-    <string name="activity_main_tvInfo">나에게 가장 잘 어울리는 스타일은?</string>
-    <string name="activity_main_tvInfo2">여러분의 체형과 얼굴형에 어울리는 스타일을 추천해드릴게요!</string>
-    <string name="activity_main_btnAnalysis">사진 찍고 분석 받기</string>
-    <string name="activity_main_tvInfo3">나만을 위한 스타일 분석을 경험해보고 싶다면?</string>
+    <string name="activity_main_tvInfo">본투비와 함께 진짜</string>
+    <string name="activity_main_tvInfo02">나</string>
+    <string name="activity_main_tvInfo03">를 찾아보세요.</string>
+    <string name="activity_main_tvInfo04">위 이미지 클릭!</string>
     <string name="activity_main_btnFaceAnalysis">얼굴형 분석</string>
     <string name="activity_main_btnBodyAnalysis">체형 분석</string>
     <string name="activity_hand_analysis_btnImageUpload">이미지 업로드</string>
     <string name="activity_hand_analysis_btnAnalysis">이미지 분석</string>
+    <string name="activity_main_btnResult">결과 기록지</string>
+    <string name="activity_main_btnHome">홈</string>
+    <string name="activity_main_btnMyPage">마이 페이지</string>
+    <string name="activity_main_tv01">본투비와 떠날</string>
+    <string name="activity_main_tv02">여정</string>
+    <string name="activity_main_tv03">을 골라 주세요.</string>
+
+    <!-- activity result -->
+    <string name="activity_result_title01">설명</string>
+    <!-- wave comment -->
+    <string name="activity_result_wave_comment">
+        가장 날씬하고 여리여리한 이미지를 갖는 골격입니다.
+        \n어깨도 둥글고 얇은 편이라 어깨를 강조하는 프릴, 퍼프가 더해진 상의를 선택하면 왜소한 상체를 커버할 수 있죠.
+        \n반면 오버핏 아우터는 왜소한 상체를 더욱 강조할 수 있으니 주의하세요.
+        \n웨이브 체형은 허리가 다소 긴 편이라 짧은 상의와 하체가 길어 보이는 하이웨스트 팬츠 조합을 추천해요.
+        \n볼륨감 있는 스타일링으로 전체적으로 평면적이고 완만한 체형을 입체감 있게 보완하면 장점을 더욱 극대화할 수 있습니다.
+        \n페미닌하고 우아한 이미지를 지닌 웨이브 타입은 러프하고 드라이한 질감보다 윤기나는 헤어스타일이 잘 어울립니다.
+        \n목과 쇄골 주위가 허전해 보일 수 있고, 바스트도 상대적으로 밑에 위치한 편이기 때문에 중단발 이상의 기장에 웨이브가 더해진 헤어를 추천해요.
+    </string>
+    <!-- wave feature -->
+    <string name="activity_result_wave_feature01">골격이 가늘고 몸의 두께가 얇은 편</string>
+    <string name="activity_result_wave_feature02">목이 가늘고 긴 편</string>
+    <string name="activity_result_wave_feature03">둥글고 얇은 어깨</string>
+    <string name="activity_result_wave_feature04">신체 중심이 하체에 있어 허리가 가늘고 길어 보임</string>
+    <string name="activity_result_wave_feature05">가느다란 뼈, 근육이 잘 드러나지 않음</string>
+    <string name="activity_result_wave_feature06">쇄골이나 갈비뼈가 드러나는 타입</string>
+    <string name="activity_result_wave_feature07">넓은 골반</string>
+    <string name="activity_result_wave_feature08">삼각형 실루엣으로 살이찌면 엉덩이 부분이 찜</string>
+    <!-- wave tip -->
+    <string name="activity_result_wave_tip01">박시한 오버사이즈 옷은 왜소해보일 수 있어요.</string>
+    <string name="activity_result_wave_tip02">붙는 느낌의 옷이 좋음</string>
+    <string name="activity_result_wave_tip03">하이웨스트 등으로 상체를 짧게, 하체는 길어 보이게!</string>
+    <string name="activity_result_wave_tip04">벨트 등으로 허리를 한 번 강조할 것!</string>
+    <string name="activity_result_wave_tip05">머메이드 라인같이 곡선미를 강조하는 라인이 어울려요.</string>
+
 </resources>

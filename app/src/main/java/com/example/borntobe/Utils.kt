@@ -6,6 +6,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources.getColorStateList
 import java.util.regex.Pattern
 
 /** Utils.class :
@@ -50,10 +51,10 @@ class Utils(private val context: Context) {
         Log.i("isMatch", "isMatch1 = $isMatch1")
         Log.i("isMatch", "isMatch2 = $isMatch2")
         return if (isMatch1 || isMatch2) {
-            editText.setBackgroundResource(R.drawable.bg_round_square_stroke_gray)
+            editText.backgroundTintList = getColorStateList(context, R.color.gray)
             true
         } else {
-            editText.setBackgroundResource(R.drawable.bg_round_square_stroke_red)
+            editText.backgroundTintList = getColorStateList(context, R.color.red)
             false
         }
     }
@@ -62,10 +63,10 @@ class Utils(private val context: Context) {
         val pwPattern = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%?_])[A-Za-z0-9!@#$%?_]{8,16}$"
         val isMatch = Pattern.matches(pwPattern, pw)
         return if (isMatch){
-            editText.setBackgroundResource(R.drawable.bg_round_square_stroke_gray)
+            editText.backgroundTintList = getColorStateList(context, R.color.gray)
             true
         } else {
-            editText.setBackgroundResource(R.drawable.bg_round_square_stroke_red)
+            editText.backgroundTintList = getColorStateList(context, R.color.red)
             false
         }
     }

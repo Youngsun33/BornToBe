@@ -5,7 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".OnboardingActivity">
+
     <!-- page indicator  -->
     <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
         android:id="@+id/activity_onboarding_dotsIndicator"
@@ -13,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:layout_marginBottom="30dp"
-        app:dotsColor="@color/burgundy"
+        app:dotsColor="@color/gray"
         app:dotsCornerRadius="8dp"
         app:dotsSize="16dp"
         app:dotsSpacing="4dp"
@@ -23,7 +25,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:progressMode="true"
-        app:selectedDotColor="@color/burgundy" />
+        app:selectedDotColor="@color/blue" />
+
     <!-- viewpager -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/activity_onboarding_viewPager"
@@ -33,6 +36,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activity_onboarding_dotsIndicator" />
+
     <!-- next button -->
     <LinearLayout
         android:id="@+id/activity_onboarding_ll"
@@ -65,6 +69,7 @@
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/ic_btn_next" />
     </LinearLayout>
+
     <!-- Move to SignIn & SignUp Page Button -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/activity_onboarding_cl"
@@ -81,9 +86,9 @@
             android:id="@+id/activity_onboarding_btnSignIn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="@color/burgundy"
+            android:background="@color/gray"
             android:text="@string/activity_onboarding_tvSignIn"
-            android:textColor="@color/white"
+            android:textColor="@color/blue"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -105,9 +110,9 @@
             android:id="@+id/activity_onboarding_btnSignUp"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="@color/burgundy"
+            android:background="@color/gray"
             android:text="@string/activity_onboarding_tvSignUp"
-            android:textColor="@color/white"
+            android:textColor="@color/blue"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

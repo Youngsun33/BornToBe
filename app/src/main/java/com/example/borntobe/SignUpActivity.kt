@@ -139,13 +139,13 @@ class SignUpActivity : AppCompatActivity() {
                         Log.w("signUp", "Error adding document", e)
                     }
 
-                // DataStoreModule() : 자동 로그인을 위한 datastore 객체 생성
+                // 내부 DB에 사용자 정보 저장
                 val dataStore = DataStoreModule(this)
                 CoroutineScope(Dispatchers.IO).launch {
                     dataStore.saveUserID(id)
                     dataStore.saveUserPW(pw)
                     dataStore.saveUserName(name)
-                    dataStore.saveAutoLoginState(state = true)
+                    dataStore.saveAutoLoginState("true")
                 }
 
                 // 로그인 : 메인 화면 전환
@@ -160,23 +160,27 @@ class SignUpActivity : AppCompatActivity() {
         btnIDCheck.setOnClickListener {
             isBtnIDCheckClick = true
             val id = userID.text.toString()
-            // 사용자가 입력한 ID와 중복 되는 ID가 존재하는지 검사
-            db.collection("users")
-                .whereEqualTo("id", id)
-                .get()
-                .addOnSuccessListener { documents ->
-                    if (!documents.isEmpty) {
-                        isExistID = true
-                        isBtnIDCheckClick = false
-                        utils.showToast("이미 존재하는 ID 입니다.")
-                    } else {
-                        isExistID = false
-                        utils.showToast("사용 가능한 ID 입니다.")
+            if (id.isBlank()) {
+                utils.showToast("ID를 입력해주세요.")
+            } else {
+                // 사용자가 입력한 ID와 중복 되는 ID가 존재하는지 검사
+                db.collection("users")
+                    .whereEqualTo("id", id)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        if (!documents.isEmpty) {
+                            isExistID = true
+                            isBtnIDCheckClick = false
+                            utils.showToast("이미 존재하는 ID 입니다.")
+                        } else {
+                            isExistID = false
+                            utils.showToast("사용 가능한 ID 입니다.")
+                        }
                     }
-                }
-                .addOnFailureListener { exception ->
-                    Log.w("signUp", "Error getting documents: ", exception)
-                }
+                    .addOnFailureListener { exception ->
+                        Log.w("signUp", "Error getting documents: ", exception)
+                    }
+            }
         }
 
         // ID EditText : TextWatcher 연결하여 실시간 유효성 검사
@@ -218,9 +222,9 @@ class SignUpActivity : AppCompatActivity() {
                 // 텍스트 변경될 때마다 호출 : 실시간으로 입력 값 검사 가능
                 val isMatch = (userPW.text.toString() == userPWCheck.text.toString())
                 if (isMatch)
-                    userPWCheck.setBackgroundResource(R.drawable.bg_round_square_stroke_gray)
+                    userPWCheck.backgroundTintList = getColorStateList(R.color.gray)
                 else
-                    userPWCheck.setBackgroundResource(R.drawable.bg_round_square_stroke_red)
+                    userPWCheck.backgroundTintList = getColorStateList(R.color.red)
             }
 
             override fun afterTextChanged(p0: Editable?) {

@@ -1,96 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/burgundy"
+    android:background="@color/white"
     tools:context=".MainActivity">
 
     <!-- Logo -->
     <ImageView
         android:id="@+id/activity_main_ivLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="30dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="50dp"
         android:importantForAccessibility="no"
-        android:paddingTop="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/activity_main_ll"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_logo_04" />
-
-    <ImageView
-        android:id="@+id/activity_main_ivBG"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="20dp"
-        android:importantForAccessibility="no"
-        app:layout_constraintBottom_toTopOf="@+id/activity_main_btnHome"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_main_ivLogo"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@android:drawable/screen_background_light" />
-
-    <!-- GLSurfaceView for OpenGL ES Rendering -->
-    <android.opengl.GLSurfaceView
-        android:id="@+id/activity_main_glSurfaceView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintBottom_toTopOf="@+id/activity_main_btnAnalysisFace"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/activity_main_ivBG" />
+        app:srcCompat="@drawable/ic_logo_01" />
 
     <!-- Main Content -->
-    <Button
-        android:id="@+id/activity_main_btnAnalysisFace"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/activity_main_ll"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="얼굴형 분석하기"
-        app:layout_constraintBottom_toTopOf="@id/activity_main_btnAnalysisHand"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/activity_main_navBottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_main_glSurfaceView" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/activity_main_btnAnalysisHand"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="손을 통한 체형 분석"
-        app:layout_constraintBottom_toBottomOf="@+id/activity_main_ivBG"
+        <ImageView
+            android:id="@+id/activity_main_ivAnalysis"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:importantForAccessibility="no"
+            app:srcCompat="@drawable/ic_btn_main" />
+
+        <!-- Text -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_main_tvInfo"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="@string/activity_main_tvInfo02"
+                android:textColor="@color/blue" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_main_tvInfo03"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/activity_main_tvInfo04"
+            android:textColor="@color/gray" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/activity_main_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/gray"
+        app:layout_constraintBottom_toTopOf="@+id/activity_main_navBottom"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/activity_main_btnAnalysisFace" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Bottom Navigation -->
-    <ImageButton
-        android:id="@+id/activity_main_btnHome"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:backgroundTint="@color/burgundy"
-        android:importantForAccessibility="no"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/activity_main_btnProfile"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_btn_home" />
-
-    <ImageButton
-        android:id="@+id/activity_main_btnProfile"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:backgroundTint="@color/burgundy"
-        android:importantForAccessibility="no"
-        android:scaleType="centerInside"
+    <LinearLayout
+        android:id="@+id/activity_main_navBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/activity_main_btnHome"
-        app:layout_constraintTop_toBottomOf="@+id/activity_main_ivBG"
-        app:srcCompat="@drawable/ic_btn_profile" />
+        app:layout_constraintStart_toStartOf="parent">
 
+        <!-- Result Button -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/activity_main_btnResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:importantForAccessibility="no"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_btn_result" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/activity_main_btnResult"
+                android:textColor="@color/gray" />
+        </LinearLayout>
+
+        <!-- Home Button -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/activity_main_btnHome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:importantForAccessibility="no"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_btn_home" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/activity_main_btnHome"
+                android:textColor="@color/gray" />
+        </LinearLayout>
+
+        <!-- My Page Button -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/activity_main_btnProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:importantForAccessibility="no"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_btn_profile" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/activity_main_btnMyPage"
+                android:textColor="@color/gray" />
+        </LinearLayout>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

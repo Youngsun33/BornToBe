@@ -44,28 +44,39 @@ android {
 }
 
 dependencies {
+    // AndroidX 라이브러리들
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.material)
-    // firebase 관련 lib
+
+    // Firebase 관련 라이브러리들
     implementation(libs.firebase.auth)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics.ktx)
-    // mediapipe 관련 lib
+
+    // Mediapipe 관련 라이브러리
     implementation(libs.tasks.vision)
+
+    // DataStore 관련 라이브러리들
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.preferences.core)
+
+    // 테스트 관련 라이브러리들
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    // ml-kit 관련 lib
+
+    // ML Kit 관련 라이브러리
     implementation(libs.face.detection)
-    // indicator lib : onboarding 화면에서 사용하기 위한 dot indicator 관련 lib
+
+    // Indicator 라이브러리
     implementation(libs.dotsindicator)
-    // CNN알고리즘 사용위한 tensorflow lib
-    implementation(libs.tensorflow.lite)
+
+    // TensorFlow Lite 라이브러리들
+    implementation("org.tensorflow:tensorflow-lite:2.7.0")
+    implementation("org.tensorflow:tensorflow-lite-support:0.3.1")
 }
