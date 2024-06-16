@@ -2,6 +2,8 @@ package com.example.borntobe
 
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.ImageView
@@ -45,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         // 다이얼로그 설정
         dialog = Dialog(this)
         dialog.setContentView(R.layout.dialog_analysis)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.window!!.setLayout(
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.WRAP_CONTENT

@@ -1,12 +1,15 @@
 package com.example.borntobe
 
 
+import android.app.Dialog
 import android.graphics.Bitmap
 import android.graphics.PointF
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.result.ActivityResultLauncher
@@ -26,6 +29,7 @@ class FaceAnalysisActivity : AppCompatActivity() {
     private lateinit var imageView: ImageView   // 이미지를 표시할 뷰
     private lateinit var buttonLoadImage: Button  // 이미지를 불러올 버튼
     private lateinit var pickMedia: ActivityResultLauncher<String>  // 이미지 선택을 위한 런처
+    private lateinit var dialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +37,16 @@ class FaceAnalysisActivity : AppCompatActivity() {
 
         imageView = findViewById(R.id.imageView)
         buttonLoadImage = findViewById(R.id.buttonLoadImage)
+
+        // 다이얼로그 설정
+        dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_caution)
+        dialog.window!!.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
+        dialog.setCanceledOnTouchOutside(true)
+        showDialog()
 
         // 얼굴 인식 옵션 설정
         val faceDetectorOptions = FaceDetectorOptions.Builder()
@@ -94,6 +108,28 @@ class FaceAnalysisActivity : AppCompatActivity() {
             foreheadWidth < width / 3 -> showToast("마름모형 얼굴")  // 이마가 전체 너비의 1/3보다 작음
             height / width > 1.5 -> showToast("땅콩형 얼굴")  // 높이가 너비보다 1.5배 더 큼
             else -> showToast("육각형 얼굴")  // 기타 모든 조건을 만족하지 않는 경우
+        }
+    }
+
+    // 다이얼로그 띄워주는 메소드
+    private fun showDialog() {
+        dialog.show()
+
+        // 텍스트 내용 변경
+        dialog.findViewById<TextView>(R.id.dialog_caution_tvInfo01)
+            .setText(R.string.dialog_caution_faceInfo01)
+        dialog.findViewById<TextView>(R.id.dialog_caution_tvInfo03)
+            .setText(R.string.dialog_caution_faceInfo03)
+        dialog.findViewById<TextView>(R.id.dialog_caution_tvInfo04)
+            .setText(R.string.dialog_caution_faceInfo04)
+
+        // 아이콘 변경
+        dialog.findViewById<ImageView>(R.id.dialog_caution_ivIC)
+            .setImageResource(R.drawable.ic_caution_face)
+
+        // 확인 버튼
+        dialog.findViewById<Button>(R.id.dialog_caution_btnConfirm).setOnClickListener {
+            dialog.dismiss()
         }
     }
 

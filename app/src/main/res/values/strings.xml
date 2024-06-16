@@ -51,8 +51,6 @@
     <string name="activity_main_tvInfo04">위 이미지 클릭!</string>
     <string name="activity_main_btnFaceAnalysis">얼굴형 분석</string>
     <string name="activity_main_btnBodyAnalysis">체형 분석</string>
-    <string name="activity_hand_analysis_btnImageUpload">이미지 업로드</string>
-    <string name="activity_hand_analysis_btnAnalysis">이미지 분석</string>
     <string name="activity_main_btnResult">결과 기록지</string>
     <string name="activity_main_btnHome">홈</string>
     <string name="activity_main_btnMyPage">마이 페이지</string>
@@ -60,8 +58,107 @@
     <string name="activity_main_tv02">여정</string>
     <string name="activity_main_tv03">을 골라 주세요.</string>
 
+    <!-- activity hand -->
+    <string name="activity_hand_analysis_btnImageUpload">이미지 업로드</string>
+    <string name="activity_hand_analysis_btnAnalysis">이미지 분석</string>
+    <string name="activity_hand_analysis_btnCamera">이미지 촬영</string>
+    <string name="activity_hand_analysis_btnResult">결과 보기</string>
+
+    <!-- dialog  -->
+    <!-- dialog caution  -->
+    <string name="dialog_caution_title">주의사항</string>
+    <string name="dialog_caution_info">다음과 같은 주의사항을 따라 주시면\n보다 정확한 측정이 가능합니다.</string>
+    <string name="dialog_caution_handInfo01">본투비는 사용자가 업로드한 손 사진을\n바탕으로 체형 분석을 진행합니다.</string>
+    <string name="dialog_caution_handInfo02">1. 보정 없는 기본 카메라를 사용해주세요.</string>
+    <string name="dialog_caution_handInfo03">2. 손과 카메라 사이의 거리가\n 20cm가 되도록 촬영해 주세요.</string>
+    <string name="dialog_caution_handInfo04">3. 손바닥은 카메라를 향하도록,\n손가락은 최대한 펴서 촬영해 주세요.</string>
+    <string name="dialog_caution_faceInfo01">본투비는 사용자가 업로드한 얼굴 사진을\n바탕으로 얼굴형 분석을 진행합니다.</string>
+    <string name="dialog_caution_faceInfo02">1. 보정 없는 기본 카메라를 사용해주세요.</string>
+    <string name="dialog_caution_faceInfo03">2. 정면 사진을 사용해주세요.</string>
+    <string name="dialog_caution_faceInfo04">3. 머리를 묶고 앞머리가 없도록 촬영해 주세요.</string>
+    <string name="dialog_caution_exImage">예시 이미지</string>
+    <string name="dialog_caution_btnConfirm">확인</string>
+
     <!-- activity result -->
     <string name="activity_result_title01">설명</string>
+    <string name="activity_result_title02">특징</string>
+    <string name="activity_result_title03">추천</string>
+
+    <string name="activity_result_userName">userName</string>
+    <string name="activity_result_stringBody">님의 체형은</string>
+    <string name="activity_result_stringFace">님의 얼굴형은</string>
+
+    <string name="activity_result_straight">스트레이트 타입</string>
+    <string name="activity_result_natural">내추럴 타입</string>
+    <string name="activity_result_wave">웨이브 타입</string>
+
+    <string name="activity_result_heart">하트형</string>
+    <string name="activity_result_oval">계란형</string>
+    <string name="activity_result_oblong">타원형</string>
+    <string name="activity_result_round">둥근형</string>
+    <string name="activity_result_square">사각형</string>
+
+    <!-- straight comment  -->
+    <string name="activity_result_straight_comment">
+        스트레이트 체형은 허리 위치가 높아 다리가 길어 보이는 경우가 많습니다.
+        \n전체적으로 비율이 좋고 탄탄한 바디라인을 지녔기 때문에 짧은 팬츠나 스커트를 선택하면 장점을 더욱 부각시킬 수 있죠.
+        \n반면 목은 다소 짧고 단단하기 때문에 목선에 부피감을 줄 수 있는 프릴이나 리본 등 디테일이 더해진 상의는 피하는 게 좋습니다.
+        \n심플한 브이넥을 선택하면 목선을 좀 더 시원하게 연출할 수 있어요.
+        \n헤어스타일 또한 목선이 시원하게 보일 수 있는 쇼트커트가 잘 어울리죠.
+        \n스트레이트 타입은 탄력 있는 피부를 가진 경우가 많은데요.
+        \n헤어스타일도 깔끔하게 딱 떨어지는 생머리를 선택하면 고급스러운 분위기를 연출할 수 있습니다.
+    </string>
+    <!-- straight feature -->
+    <string name="activity_result_straight_feature">
+        📌 튼튼하고 균형 잡힌 골격
+        \n📌 상하체 비율이 좋고 허리 위치가 높은 편
+        \n📌 목이 다소 짧고 승모근이 발달
+        \n📌 손목, 발목이 가는 편
+        \n📌 골고루 살이 찌는 편이나 복부, 허벅지 주변에 살이 집중
+        \n📌 근육이 골격을 덮고 있어 뼈의 두드러짐이 없음
+        \n📌 하체 비율이 좋은 편
+        \n📌 근육 있고 탄력 있는 몸
+    </string>
+    <!-- straight tip -->
+    <string name="activity_result_straight_tip">
+        💡 오버핏보다는 내 몸에 맞는 핏의 정사이즈, 가오리핏보다는 어깨핏 잘 맞는 옷
+        \n💡 슬림핏
+        \n💡 상의는 짧게, 다리는 드러내는 옷이 비율이 좋아 보일 수 있어요!
+        \n💡 목이 가벼워 보이는 레이어드, 단발, 숏컷 헤어스타일이 어울려요!
+        \n💡 목걸이의 경우 쵸커같이 너무 짧은 목걸이보단 조금 더 롱 기장의 목걸이가 어울려요!
+    </string>
+
+    <!--  natural comment  -->
+    <string name="activity_result_natural_comment">
+        내추럴 체형은 골격이 있어 옷 핏이 가장 좋아 보이는 유형입니다.
+        \n홀터넥을 선택하면 곧게 뻗은 직각 어깨와 11자 쇄골의 장점을 극대화할 수 있죠.
+        \n오버핏 착장이 제일 잘 어울리는 체형이기도 한데요.
+        \n와일드한 골격을 커버하고 싶다면 루즈하고 러프한 디자인을 선택해 보세요.
+        \n상대적으로 굴곡이 적은 허리 라인을 커버하고 스타일리시한 데일리 룩을 연출할 수 있습니다.
+        \n전반적인 무드는 시크하고 내추럴한 스타일이 잘 어울리는 유형이라 프렌치 시크 스타일의 와이드 팬츠도 추천합니다.
+        \n헤어스타일도 마찬가지로 내추럴하게 연출한 헤어가 잘 어울리는데요.
+        \n루즈하게 묶거나 러프한 머리 질감을 살리는 것도 좋습니다.
+    </string>
+    <!-- natural feature -->
+    <string name="activity_result_natural_feature">
+        📌 뼈가 단단하고 골격이 발달한 체형
+        \n📌 가슴과 허리 위치가 높은 편
+        \n📌 신체 중심이 높고 어깨가 발달
+        \n📌 상대적으로 키가 큰 편
+        \n📌 근육이나 지방보다 쇄골, 무릎뼈 등이 부각
+        \n📌 손발의 크기가 큰 편
+        \n📌 옷 핏이 좋아보임
+        \n📌 모델 중에 내추럴 체형이 많음
+    </string>
+    <!-- natural tip -->
+    <string name="activity_result_natural_tip">
+        💡 캐쥬얼한 스타일
+        \n💡 긴 기장이 어울리는 경우가 많아요.
+        \n💡 루즈하고 와이드한 핏
+        \n💡 품이 넉넉한 오버사이즈가 어울려요!
+        \n💡 아기자기한 느낌보다는 시크하고 세련된 이미지로!
+    </string>
+
     <!-- wave comment -->
     <string name="activity_result_wave_comment">
         가장 날씬하고 여리여리한 이미지를 갖는 골격입니다.
@@ -73,19 +170,23 @@
         \n목과 쇄골 주위가 허전해 보일 수 있고, 바스트도 상대적으로 밑에 위치한 편이기 때문에 중단발 이상의 기장에 웨이브가 더해진 헤어를 추천해요.
     </string>
     <!-- wave feature -->
-    <string name="activity_result_wave_feature01">골격이 가늘고 몸의 두께가 얇은 편</string>
-    <string name="activity_result_wave_feature02">목이 가늘고 긴 편</string>
-    <string name="activity_result_wave_feature03">둥글고 얇은 어깨</string>
-    <string name="activity_result_wave_feature04">신체 중심이 하체에 있어 허리가 가늘고 길어 보임</string>
-    <string name="activity_result_wave_feature05">가느다란 뼈, 근육이 잘 드러나지 않음</string>
-    <string name="activity_result_wave_feature06">쇄골이나 갈비뼈가 드러나는 타입</string>
-    <string name="activity_result_wave_feature07">넓은 골반</string>
-    <string name="activity_result_wave_feature08">삼각형 실루엣으로 살이찌면 엉덩이 부분이 찜</string>
+    <string name="activity_result_wave_feature">
+        📌 골격이 가늘고 몸의 두께가 얇은 편
+        \n📌 목이 가늘고 긴 편
+        \n📌 둥글고 얇은 어깨
+        \n📌 신체 중심이 하체에 있어 허리가 가늘고 길어 보임
+        \n📌 가느다란 뼈, 근육이 잘 드러나지 않음
+        \n📌 쇄골이나 갈비뼈가 드러나는 타입
+        \n📌 넓은 골반
+        \n📌 삼각형 실루엣으로 살이찌면 엉덩이 부분이 찜
+    </string>
     <!-- wave tip -->
-    <string name="activity_result_wave_tip01">박시한 오버사이즈 옷은 왜소해보일 수 있어요.</string>
-    <string name="activity_result_wave_tip02">붙는 느낌의 옷이 좋음</string>
-    <string name="activity_result_wave_tip03">하이웨스트 등으로 상체를 짧게, 하체는 길어 보이게!</string>
-    <string name="activity_result_wave_tip04">벨트 등으로 허리를 한 번 강조할 것!</string>
-    <string name="activity_result_wave_tip05">머메이드 라인같이 곡선미를 강조하는 라인이 어울려요.</string>
+    <string name="activity_result_wave_tip">
+        💡 박시한 오버사이즈 옷은 왜소해보일 수 있어요.
+        \n💡 붙는 느낌의 옷이 좋아요.
+        \n💡 하이웨스트 등으로 상체를 짧게, 하체는 길어 보이게!
+        \n💡 벨트 등으로 허리를 한 번 강조할 것!
+        \n💡 머메이드 라인같이 곡선미를 강조하는 라인이 어울려요.
+    </string>
 
 </resources>
