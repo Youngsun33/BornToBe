@@ -1,14 +1,12 @@
 package com.example.borntobe
 
-
 import android.graphics.Bitmap
-import android.graphics.PointF
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +15,6 @@ import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.support.common.FileUtil
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.io.IOException
-import kotlin.math.pow
 
 class FaceAnalysisActivity : AppCompatActivity() {
 
@@ -33,22 +30,12 @@ class FaceAnalysisActivity : AppCompatActivity() {
         imageView = findViewById(R.id.imageView)
         buttonLoadImage = findViewById(R.id.buttonLoadImage)
 
-        // 얼굴 인식 옵션 설정
-        val faceDetectorOptions = FaceDetectorOptions.Builder()
-            .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)  // 정확도를 우선하는 모드
-            .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)  // 모든 랜드마크 검출 활성화
-            .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)  // 표정 등 분류 정보 활성화
-            .setContourMode(FaceDetectorOptions.CONTOUR_MODE_ALL)  // 얼굴 윤곽 검출 활성화
-            .build()
-
-        detector = FaceDetection.getClient(faceDetectorOptions)
-
         pickMedia = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
                 imageView.setImageURI(uri)
                 try {
                     val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
-                    detectFaces(bitmap)
+                    classifyImage(bitmap)
                 } catch (e: IOException) {
                     Toast.makeText(this, "이미지 로드 실패: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
@@ -60,7 +47,6 @@ class FaceAnalysisActivity : AppCompatActivity() {
         buttonLoadImage.setOnClickListener {
             pickMedia.launch("image/*")
         }
-    }
 
         // TensorFlow Lite 모델 로드
         try {
@@ -85,16 +71,12 @@ class FaceAnalysisActivity : AppCompatActivity() {
         resizedBitmap.getPixels(intValues, 0, resizedBitmap.width, 0, 0, resizedBitmap.width, resizedBitmap.height)
         val floatValues = FloatArray(224 * 224 * 3)
 
-        // 기준에 따라 얼굴형 분류: 너비, 높이, 이마 너비, 턱 너비를 이용
-        when {
-            height > width && (foreheadWidth > jawWidth) -> showToast("하트형 얼굴")  // 더 높고, 이마가 턱보다 넓음
-            height > width && (foreheadWidth < jawWidth) -> showToast("계란형 얼굴")  // 더 높고, 턱이 이마보다 넓음
-            width > height -> showToast("둥근형 얼굴")  // 더 넓음
-            foreheadWidth < width / 3 -> showToast("마름모형 얼굴")  // 이마가 전체 너비의 1/3보다 작음
-            height / width > 1.5 -> showToast("땅콩형 얼굴")  // 높이가 너비보다 1.5배 더 큼
-            else -> showToast("육각형 얼굴")  // 기타 모든 조건을 만족하지 않는 경우
+        for (i in intValues.indices) {
+            val value = intValues[i]
+            floatValues[i * 3] = (value shr 16 and 0xFF) / 255.0f
+            floatValues[i * 3 + 1] = (value shr 8 and 0xFF) / 255.0f
+            floatValues[i * 3 + 2] = (value and 0xFF) / 255.0f
         }
-    }
 
         inputBuffer.loadArray(floatValues)
 

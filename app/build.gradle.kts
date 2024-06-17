@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.borntobe"
-        minSdk = 26
+        minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -44,26 +44,39 @@ android {
 }
 
 dependencies {
-
+    // AndroidX 라이브러리들
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    // firebase 관련 lib
+    implementation(libs.material)
+
+    // Firebase 관련 라이브러리들
     implementation(libs.firebase.auth)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics.ktx)
-    // mediapipe 관련 lib
+
+    // Mediapipe 관련 라이브러리
     implementation(libs.tasks.vision)
+
+    // DataStore 관련 라이브러리들
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.preferences.core)
+
+    // 테스트 관련 라이브러리들
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    // CNN알고리즘 사용을 위한 TensorFlow Lite 추가
-    implementation("org.tensorflow:tensorflow-lite:+")
-    implementation("com.google.mlkit:face-detection:16.0.6")
-    implementation("androidx.activity:activity:1.8.1")
+    // ML Kit 관련 라이브러리
+    implementation(libs.face.detection)
+
+    // Indicator 라이브러리
+    implementation(libs.dotsindicator)
+
+    // TensorFlow Lite 라이브러리들
+    implementation("org.tensorflow:tensorflow-lite:2.7.0")
+    implementation("org.tensorflow:tensorflow-lite-support:0.3.1")
 }
