@@ -1,7 +1,5 @@
 package com.example.borntobe
 
-import android.util.Log
-import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarker
 import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarkerResult
 import kotlin.math.sqrt
 

@@ -1,5 +1,7 @@
 package com.example.borntobe
 
+import android.app.Dialog
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -8,7 +10,10 @@ import android.graphics.ImageDecoder
 import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.WindowManager
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
@@ -25,6 +30,11 @@ import com.google.firebase.firestore.firestore
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarker
 import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarkerResult
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.system.exitProcess
@@ -33,6 +43,7 @@ class HandAnalysisActivity : AppCompatActivity() {
     companion object {
         private const val LANDMARK_STROKE_WIDTH = 8F
     }
+
     // HandLandMark Detection 관련 변수
     private var results: HandLandmarkerResult? = null
     private var linePaint = Paint()
@@ -43,28 +54,32 @@ class HandAnalysisActivity : AppCompatActivity() {
 
     // ViewBinding 사용
     private lateinit var binding: ActivityHandAnalysisBinding
+
     // 위젯 변수
     private lateinit var ivImage: ImageView
-    private lateinit var btnImageUpload: Button
-    private lateinit var btnAnalysis: Button
+    private lateinit var btnImageUpload: ImageButton
+    private lateinit var btnAnalysis: ImageButton
+    private lateinit var btnResult: Button
     private lateinit var image: Bitmap
     private lateinit var handLandmarkerHelper: HandLandmarkerHelper
+    private lateinit var dialog: Dialog
     private val utils: Utils = Utils(this)
     private lateinit var db: FirebaseFirestore
 
     // onBackPressedCallback : 뒤로 가기 동작을 정의하는 callback 메소드
     private var backKeyPressedTime = 0L
-    private val onBackPressedCallback: OnBackPressedCallback = object: OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            // 사용자가 2초 이내에 뒤로 가기 버튼을 한 번 더 클릭하면 화면 종료
-            if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
-                backKeyPressedTime = System.currentTimeMillis()
-                utils.showToast("뒤로가기를 한번 더 누르면 종료됩니다.")
-            } else {
-                exitProgram()
+    private val onBackPressedCallback: OnBackPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // 사용자가 2초 이내에 뒤로 가기 버튼을 한 번 더 클릭하면 화면 종료
+                if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+                    backKeyPressedTime = System.currentTimeMillis()
+                    utils.showToast("뒤로가기를 한번 더 누르면 종료됩니다.")
+                } else {
+                    exitProgram()
+                }
             }
         }
-    }
 
     // isPhotoPickerAvailable : 사진 선택 도구가 사용 가능한 기기 인지 확인
     private val isPhotoPickerAvailable =
@@ -81,6 +96,7 @@ class HandAnalysisActivity : AppCompatActivity() {
             if (uri != null) {
                 Log.i("PhotoPicker", "Selected URI: $uri")
                 // 이미지뷰에 가져온 이미지 설정
+                ivImage.scaleType = ImageView.ScaleType.CENTER_CROP
                 ivImage.setImageURI(uri)
                 Log.i("PhotoPicker", "Image Upload Success")
                 utils.showToast("이미지가 업로드 되었습니다.")
@@ -108,7 +124,17 @@ class HandAnalysisActivity : AppCompatActivity() {
         // db 객체 생성
         db = Firebase.firestore
         // 뒤로 가기 버튼 동작 정의
-        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        //onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
+        // 다이얼로그 설정
+        dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_caution)
+        dialog.window!!.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
+        dialog.setCanceledOnTouchOutside(true)
+        showDialog()
 
         // 이미지 업로드 버튼 : 갤러리에서 사진을 가져와 ImageView에 띄움
         ivImage = binding.activityHandAnalysisIvImage
@@ -136,8 +162,8 @@ class HandAnalysisActivity : AppCompatActivity() {
             val handAnalysisStandardBitmap = BitmapFactory.decodeStream(inputStream)
             val resizedStandardBitmap = Bitmap.createScaledBitmap(
                 handAnalysisStandardBitmap,
-                ivImage.width,
-                ivImage.height,
+                image.width,
+                image.height,
                 true
             )
             // 2. 규격 이미지 손 분석 수행
@@ -153,9 +179,11 @@ class HandAnalysisActivity : AppCompatActivity() {
                 initPaints()
                 setResults(handLandMarkerResult, resizedImg.height, resizedImg.width)
                 draw(canvas)
+                ivImage.scaleType = ImageView.ScaleType.FIT_XY
                 ivImage.setImageBitmap(resizedImg)
 
-                val handAnalysisHelper = HandAnalysisHelper(handLandMarkerResult, handStandardResult!!)
+                val handAnalysisHelper =
+                    HandAnalysisHelper(handLandMarkerResult, handStandardResult!!)
                 handAnalysisHelper.classifier()
                 val bodyShape = handAnalysisHelper.analysisBodyShape()
                 utils.showToast("결과 사진 업로드 완료. 체형은 $bodyShape")
@@ -181,11 +209,30 @@ class HandAnalysisActivity : AppCompatActivity() {
                     db.collection("users")
                         .add(data)
                         .addOnSuccessListener { documentReference ->
-                            Log.d("HandAnalysis", "DocumentSnapshot written with ID: ${documentReference.id}")
+                            Log.d(
+                                "HandAnalysis",
+                                "DocumentSnapshot written with ID: ${documentReference.id}"
+                            )
                         }
                         .addOnFailureListener { e ->
                             Log.w("HandAnalysis", "Error adding document", e)
                         }
+                    // 결과 화면으로 전환
+                    btnResult = binding.activityHandAnalysisBtnResult
+                    btnResult.visibility = View.VISIBLE
+                    btnResult.setOnClickListener {
+                        intent = Intent(this, ResultActivity::class.java)
+                        var userName = "userName"
+                        CoroutineScope(Dispatchers.IO).launch {
+                            dataStore.userNameFlow.collectLatest {
+                                userName = it
+                            }
+                        }
+                        Thread.sleep(1000)
+                        intent.putExtra("userName", userName)
+                        intent.putExtra("bodyShape", bodyShape)
+                        startActivity(intent)
+                    }
                 } else
                     utils.showToast("사용자 정보가 데이터베이스에 존재하지 않습니다.")
             } else
@@ -263,6 +310,16 @@ class HandAnalysisActivity : AppCompatActivity() {
                     )
                 }
             }
+        }
+    }
+
+    // 다이얼로그 띄워주는 메소드
+    private fun showDialog() {
+        dialog.show()
+
+        // 확인 버튼
+        dialog.findViewById<Button>(R.id.dialog_caution_btnConfirm).setOnClickListener {
+            dialog.dismiss()
         }
     }
 

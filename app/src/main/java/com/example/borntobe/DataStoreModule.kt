@@ -13,14 +13,14 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.catch
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "auto_login")
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_info")
 class DataStoreModule(private val context: Context) {
     // Key 값 변수들
     private object PreferenceKeys {
         val USER_ID = stringPreferencesKey("user_id")
         val USER_PW = stringPreferencesKey("user_pw")
         val USER_NAME = stringPreferencesKey("user_name")
-        val AUTO_LOGIN_STATE = booleanPreferencesKey("auto_login_state")
+        val AUTO_LOGIN_STATE = stringPreferencesKey("auto_login_state")
     }
 
     // userIDFlow 변수 : 저장된 사용자 ID 값 읽어옴
@@ -84,7 +84,7 @@ class DataStoreModule(private val context: Context) {
     }
 
     // userNameFlow 변수 : 저장된 사용자 name 값 읽어옴
-    val autoLoginState: Flow<Boolean> = context.dataStore.data
+    val autoLoginState: Flow<String> = context.dataStore.data
         .catch { exception ->
             if (exception is IOException) {
                 emit(emptyPreferences())
@@ -94,10 +94,10 @@ class DataStoreModule(private val context: Context) {
         }
         .map { preferences ->
             // No type safety.
-            preferences[PreferenceKeys.AUTO_LOGIN_STATE] ?: false
+            preferences[PreferenceKeys.AUTO_LOGIN_STATE] ?: "false"
         }
     // saveAutoLoginState() : 전달 받은 자동 로그인 설정 여부 저장
-    suspend fun saveAutoLoginState(state: Boolean) {
+    suspend fun saveAutoLoginState(state: String) {
         context.dataStore.edit { settings ->
             settings[PreferenceKeys.AUTO_LOGIN_STATE] = state
         }

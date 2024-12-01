@@ -7,6 +7,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
@@ -18,6 +19,9 @@ import com.example.borntobe.databinding.ActivitySignInBinding
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
 
 class SignInActivity : AppCompatActivity() {
@@ -27,6 +31,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var btnSignUp: Button
     private lateinit var userID: EditText
     private lateinit var userPW: EditText
+    private lateinit var chkAutoLogin: CheckBox
     private lateinit var utils: Utils
 
     // db 변수
@@ -107,6 +112,14 @@ class SignInActivity : AppCompatActivity() {
                         else if (documents.isEmpty)
                             utils.showToast("아이디 또는 비밀번호가 일치하지 않습니다.")
                         else {
+                            // 자동 로그인 체크 박스 : 사용자가 자동 로그인을 체크했다면 자동 로그인 설정
+                            chkAutoLogin = binding.activitySignInChkAutoLogin
+                            if (chkAutoLogin.isChecked) {
+                                val dataStore = DataStoreModule(this)
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    dataStore.saveAutoLoginState("true")
+                                }
+                            }
                             // 로그인 : 메인 화면 전환
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
