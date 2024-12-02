@@ -3,5 +3,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="burgundy">#691734</color>
-    <color name="gray">#A1A1A1</color>
+    <color name="burgundy_dark">#420F21</color>
+    <color name="gray">#D9D9D9</color>
+    <color name="gray_dark">#BFBFBF</color>
+    <color name="red">#FF0000</color>
+    <color name="pink">#FFA5A5</color>
+    <color name="mp_color_primary">#007F8B</color>
+    <color name="blue">#990029FF</color>
 </resources>
