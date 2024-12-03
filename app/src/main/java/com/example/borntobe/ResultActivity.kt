@@ -73,6 +73,14 @@ class ResultActivity : AppCompatActivity() {
         tvComment = binding.activityResultTvComment
         tvFeature = binding.activityResultTvFeature
         tvTip = binding.activityResultTvTip
+
+        // **** 이전 화면에서 넘겨받은 값 가져오는 부분 *****
+        // getStringExtra("Key 값") : Key 값은 이전 화면 (FaceAnalysis, HandAnalysis)에서 준 값
+        // 사용자 이름 key 값 : userName
+        // 체형 결과 key 값 : bodyShape
+        // 얼굴형 key 값 : faceShape --> intent.getStringExtra("faceShape") 이런 식으로 활용
+        // faceShape의 값으로는 Oval, Oblong, Round, Square 있음
+        // if (faceShape.equal("Oval")) {Oval 결과 화면 레이아웃 띄우는 코드} 이런 식으로 작성하면 될 듯
         val bodyShape = intent.getStringExtra("bodyShape")
         when (bodyShape) {
             "Straight" -> {
