@@ -27,6 +27,11 @@ class ResultActivity : AppCompatActivity() {
     private lateinit var tvFeature: TextView
     private lateinit var tvTip: TextView
     private lateinit var iv: ImageView
+    private lateinit var ivResult: ImageView
+    private lateinit var tvHair: TextView
+    private lateinit var tvMakeup: TextView
+    private lateinit var tvEyebrow: TextView
+    private lateinit var ivEyebrowImage: ImageView
     private val utils: Utils = Utils(this)
 
     // onBackPressedCallback : 뒤로 가기 동작을 정의하는 callback 메소드
@@ -73,6 +78,12 @@ class ResultActivity : AppCompatActivity() {
         tvComment = binding.activityResultTvComment
         tvFeature = binding.activityResultTvFeature
         tvTip = binding.activityResultTvTip
+        ivResult = binding.activityResultIvResult
+        tvHair = binding.activityResultTvHair
+        tvMakeup = binding.activityResultTvMakeup
+        tvEyebrow = binding.activityResultTvEyebrow
+        ivEyebrowImage = binding.activityResultIvEyebrowImage
+
 
         // **** 이전 화면에서 넘겨받은 값 가져오는 부분 *****
         // getStringExtra("Key 값") : Key 값은 이전 화면 (FaceAnalysis, HandAnalysis)에서 준 값
@@ -81,27 +92,71 @@ class ResultActivity : AppCompatActivity() {
         // 얼굴형 key 값 : faceShape --> intent.getStringExtra("faceShape") 이런 식으로 활용
         // faceShape의 값으로는 Oval, Oblong, Round, Square 있음
         // if (faceShape.equal("Oval")) {Oval 결과 화면 레이아웃 띄우는 코드} 이런 식으로 작성하면 될 듯
+
+        val userName = intent.getStringExtra("userName")
+        val faceShape = intent.getStringExtra("faceShape")
         val bodyShape = intent.getStringExtra("bodyShape")
+
+        when (faceShape) {
+            "Oval" -> setLayout(
+                R.string.activity_result_oval,
+                R.drawable.ic_result_oval,
+                R.string.activity_result_oval_hair,
+                R.string.activity_result_oval_makeup,
+                R.string.activity_result_oval_eyebrow,
+                R.drawable.img_result_oval_eyebrow
+            )
+            "Round" -> setLayout(
+                R.string.activity_result_round,
+                R.drawable.ic_result_round,
+                R.string.activity_result_round_hair,
+                R.string.activity_result_round_makeup,
+                R.string.activity_result_round_eyebrow,
+                R.drawable.img_result_round_eyebrow
+            )
+            "Square" -> setLayout(
+                R.string.activity_result_square,
+                R.drawable.ic_result_square,
+                R.string.activity_result_square_hair,
+                R.string.activity_result_square_makeup,
+                R.string.activity_result_square_eyebrow,
+                R.drawable.img_result_square_eyebrow
+            )
+            "Long" -> setLayout(
+                R.string.activity_result_long,
+                R.drawable.ic_result_long,
+                R.string.activity_result_long_hair,
+                R.string.activity_result_long_makeup,
+                R.string.activity_result_long_eyebrow,
+                R.drawable.img_result_long_eyebrow
+            )
+            else -> {
+                tvResult.text = "얼굴형을 알 수 없습니다."
+            }
+        }
+
+        // 체형
         when (bodyShape) {
             "Straight" -> {
-                iv.setImageResource(R.drawable.ic_result_straight)
+                ivResult.setImageResource(R.drawable.ic_result_straight)
                 tvComment.setText(R.string.activity_result_straight_comment)
                 tvFeature.setText(R.string.activity_result_straight_feature)
                 tvTip.setText(R.string.activity_result_straight_tip)
             }
-
             "Natural" -> {
-                iv.setImageResource(R.drawable.ic_result_natural)
+                ivResult.setImageResource(R.drawable.ic_result_natural)
                 tvComment.setText(R.string.activity_result_natural_comment)
                 tvFeature.setText(R.string.activity_result_natural_feature)
                 tvTip.setText(R.string.activity_result_natural_tip)
             }
-
-            else -> {
-                iv.setImageResource(R.drawable.ic_result_wave)
+            "Wave" -> {
+                ivResult.setImageResource(R.drawable.ic_result_wave)
                 tvComment.setText(R.string.activity_result_wave_comment)
                 tvFeature.setText(R.string.activity_result_wave_feature)
                 tvTip.setText(R.string.activity_result_wave_tip)
+            }
+            else -> {
+                tvComment.text = "체형 정보를 알 수 없습니다."
             }
         }
     }
