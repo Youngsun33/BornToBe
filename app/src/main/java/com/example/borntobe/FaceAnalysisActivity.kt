@@ -7,8 +7,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageButton
@@ -20,27 +22,23 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.borntobe.databinding.ActivityFaceAnalysisBinding
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.face.FaceDetection
+import com.google.mlkit.vision.face.FaceDetectorOptions
+import kotlinx.coroutines.launch
 import org.tensorflow.lite.Interpreter
 import java.io.FileInputStream
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.channels.FileChannel
 import kotlin.system.exitProcess
-import android.graphics.Rect
-import android.view.View
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.face.Face
-import com.google.mlkit.vision.face.FaceDetection
-import com.google.mlkit.vision.face.FaceDetectorOptions
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 class FaceAnalysisActivity : AppCompatActivity() {
     companion object {
@@ -111,8 +109,35 @@ class FaceAnalysisActivity : AppCompatActivity() {
         binding = ActivityFaceAnalysisBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 뒤로가기 콜백 등록
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
         // Firestore 데이터베이스 초기화
         db = Firebase.firestore
+
+        val dataStore = DataStoreModule(this)
+        // 현재 사용자 정보 가져오기
+        var id = "NULL"
+        var name = "NULL"
+        var pw = "NULL"
+        lifecycleScope.launch {
+            dataStore.userNameFlow.collect { userName ->
+                name = userName
+                Log.i("A_Face", "User Name: $name")
+            }
+        }
+        lifecycleScope.launch {
+            dataStore.userIDFlow.collect { userID ->
+                id = userID
+                Log.i("A_Face", "User ID: $id")
+            }
+        }
+        lifecycleScope.launch {
+            dataStore.userPWFlow.collect { userPW ->
+                pw = userPW
+                Log.i("A_Face", "User PW: $pw")
+            }
+        }
 
         // 다이얼로그 설정
         dialog = Dialog(this)
@@ -152,7 +177,7 @@ class FaceAnalysisActivity : AppCompatActivity() {
         btnAnalysis = binding.activityFaceAnalysisBtnAnalysis
         // 분석 버튼 클릭 리스너 추가
         btnAnalysis.setOnClickListener {
-            var faceShape: String = "NULL"
+            var faceShape = "NULL"
 
             // 이미지 크롭 및 리사이즈
             preprocessImageForModel(image) { processedBitmap ->
@@ -160,59 +185,38 @@ class FaceAnalysisActivity : AppCompatActivity() {
                 faceShape = analyzeFaceShapeWithModel(processedBitmap, tflite)
             }
 
-            // 현재 사용자 ID 가져오기
-            val dataStore = DataStoreModule(this)
-            val userID = dataStore.userIDFlow.toString()
-
             // 현재 사용자가 DB에 존재하는지 검사
-            var isNotExistID = false
             db.collection("users")
-                .whereEqualTo("id", userID)
+                .whereEqualTo("id", id)
                 .get()
                 .addOnSuccessListener { documents ->
-                    isNotExistID = documents.isEmpty
+                    if (!documents.isEmpty) {
+                        // 문서가 존재하면 업데이트
+                        val document = documents.documents[0] // 첫 번째 문서 가져오기
+                        val documentRef = document.reference
+
+                        // DB에 사용자 체형 결과 저장
+                        documentRef.update("face_shape", faceShape)
+                            .addOnSuccessListener {
+                                // 결과 화면으로 전환
+                                btnResult = binding.activityFaceAnalysisBtnResult
+                                btnResult.visibility = View.VISIBLE
+                                btnResult.setOnClickListener {
+                                    intent = Intent(this, ResultActivity::class.java)
+                                    intent.putExtra("Activity", "Face")
+                                    startActivity(intent)
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Log.w("FaceAnalysis", "Error adding document", e)
+                            }
+                    } else {
+                        utils.showToast("사용자 정보가 데이터베이스에 존재하지 않습니다.")
+                    }
                 }
                 .addOnFailureListener { exception ->
                     Log.w("signUp", "Error getting documents: ", exception)
                 }
-            if (!isNotExistID) {
-                // DB에 사용자 체형 결과 저장
-                val data = hashMapOf(
-                    "face_shape" to faceShape
-                )
-
-                db.collection("users")
-                    .add(data)
-                    .addOnSuccessListener { documentReference ->
-                        Log.d(
-                            "HandAnalysis",
-                            "DocumentSnapshot written with ID: ${documentReference.id}"
-                        )
-                    }
-                    .addOnFailureListener { e ->
-                        Log.w("HandAnalysis", "Error adding document", e)
-                    }
-
-                // 결과 화면으로 전환
-                btnResult = binding.activityFaceAnalysisBtnResult
-                btnResult.visibility = View.VISIBLE
-                btnResult.setOnClickListener {
-                    intent = Intent(this, ResultActivity::class.java)
-                    var userName = "userName"
-                    CoroutineScope(Dispatchers.IO).launch {
-                        dataStore.userNameFlow.collectLatest {
-                            userName = it
-                        }
-                    }
-                    Thread.sleep(1000)
-                    intent.putExtra("userName", userName)
-                    intent.putExtra("faceShape", faceShape)
-                    intent.putExtra("ActivityName", "Face")
-                    startActivity(intent)
-                }
-            } else {
-                utils.showToast("사용자 정보가 데이터베이스에 존재하지 않습니다.")
-            }
         }
     }
 
@@ -361,7 +365,7 @@ class FaceAnalysisActivity : AppCompatActivity() {
         }
 
         // 5. 사용자에게 결과 표시
-        showToast(faceShape)
+        showToast("분석 완료! 결과를 확인해보세요.")
         return faceShape
     }
 

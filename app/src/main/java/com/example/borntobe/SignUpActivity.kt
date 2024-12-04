@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.borntobe.databinding.ActivitySignUpBinding
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -140,13 +141,16 @@ class SignUpActivity : AppCompatActivity() {
                     }
 
                 // 내부 DB에 사용자 정보 저장
-                val dataStore = DataStoreModule(this)
-                CoroutineScope(Dispatchers.IO).launch {
+                val dataStore = DataStoreModule(applicationContext)
+                lifecycleScope.launch {
                     dataStore.saveUserID(id)
                     dataStore.saveUserPW(pw)
                     dataStore.saveUserName(name)
                     dataStore.saveAutoLoginState("true")
                 }
+                Log.i("A : SignUP", id)
+                Log.i("A : SignUP", pw)
+                Log.i("A : SignUP", name)
 
                 // 로그인 : 메인 화면 전환
                 val intent = Intent(this, MainActivity::class.java)

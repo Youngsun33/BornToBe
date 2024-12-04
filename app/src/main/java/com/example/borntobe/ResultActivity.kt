@@ -1,5 +1,6 @@
 package com.example.borntobe
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Shader
@@ -12,10 +13,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.borntobe.databinding.ActivityResultBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
 
@@ -28,11 +30,8 @@ class ResultActivity : AppCompatActivity() {
     private lateinit var tvTip: TextView
     private lateinit var iv: ImageView
     private lateinit var ivResult: ImageView
-    private lateinit var tvHair: TextView
-    private lateinit var tvMakeup: TextView
-    private lateinit var tvEyebrow: TextView
-    private lateinit var ivEyebrowImage: ImageView
     private val utils: Utils = Utils(this)
+    private lateinit var db: FirebaseFirestore
 
     // onBackPressedCallback : 뒤로 가기 동작을 정의하는 callback 메소드
     private var backKeyPressedTime = 0L
@@ -52,17 +51,48 @@ class ResultActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityResultBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
+        binding = ActivityResultBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // 뒤로가기 콜백 등록
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
+        // Firestore 데이터베이스 초기화
+        db = Firebase.firestore
+
+        val dataStore = DataStoreModule(this)
+        // 현재 사용자 정보 가져오기
+        var id = "NULL"
+        var name = "NULL"
+        var pw = "NULL"
+        lifecycleScope.launch {
+            dataStore.userNameFlow.collect { userName ->
+                name = userName
+                Log.i("A_Result", "User Name: $name")
+            }
+        }
+        lifecycleScope.launch {
+            dataStore.userIDFlow.collect { userID ->
+                id = userID
+                Log.i("A_Result", "User ID: $id")
+            }
+        }
+        lifecycleScope.launch {
+            dataStore.userPWFlow.collect { userPW ->
+                pw = userPW
+                Log.i("A_Result", "User PW: $pw")
+            }
+        }
+
         // set userName
         tvUserName = binding.activityResultTvUserName
-        tvUserName.text = intent.getStringExtra("userName")
+        tvUserName.text = name
 
         // set gradient
         tvResult = binding.activityResultTvResult
@@ -79,84 +109,72 @@ class ResultActivity : AppCompatActivity() {
         tvFeature = binding.activityResultTvFeature
         tvTip = binding.activityResultTvTip
         ivResult = binding.activityResultIvResult
-        tvHair = binding.activityResultTvHair
-        tvMakeup = binding.activityResultTvMakeup
-        tvEyebrow = binding.activityResultTvEyebrow
-        ivEyebrowImage = binding.activityResultIvEyebrowImage
 
+        // 얼굴형 및 체형 결과 가져오기
+        var face = "NULL"
+        var body = "NULL"
+        db.collection("users")
+            .whereEqualTo("id", id)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    // 문서가 존재하면 업데이트
+                    val document = documents.documents[0] // 첫 번째 문서 가져오기
 
-        // **** 이전 화면에서 넘겨받은 값 가져오는 부분 *****
-        // getStringExtra("Key 값") : Key 값은 이전 화면 (FaceAnalysis, HandAnalysis)에서 준 값
-        // 사용자 이름 key 값 : userName
-        // 체형 결과 key 값 : bodyShape
-        // 얼굴형 key 값 : faceShape --> intent.getStringExtra("faceShape") 이런 식으로 활용
-        // faceShape의 값으로는 Oval, Oblong, Round, Square 있음
-        // if (faceShape.equal("Oval")) {Oval 결과 화면 레이아웃 띄우는 코드} 이런 식으로 작성하면 될 듯
-
-        val userName = intent.getStringExtra("userName")
-        val faceShape = intent.getStringExtra("faceShape")
-        val bodyShape = intent.getStringExtra("bodyShape")
-
-        when (faceShape) {
-            "Oval" -> setLayout(
-                R.string.activity_result_oval,
-                R.drawable.ic_result_oval,
-                R.string.activity_result_oval_hair,
-                R.string.activity_result_oval_makeup,
-                R.string.activity_result_oval_eyebrow,
-                R.drawable.img_result_oval_eyebrow
-            )
-            "Round" -> setLayout(
-                R.string.activity_result_round,
-                R.drawable.ic_result_round,
-                R.string.activity_result_round_hair,
-                R.string.activity_result_round_makeup,
-                R.string.activity_result_round_eyebrow,
-                R.drawable.img_result_round_eyebrow
-            )
-            "Square" -> setLayout(
-                R.string.activity_result_square,
-                R.drawable.ic_result_square,
-                R.string.activity_result_square_hair,
-                R.string.activity_result_square_makeup,
-                R.string.activity_result_square_eyebrow,
-                R.drawable.img_result_square_eyebrow
-            )
-            "Long" -> setLayout(
-                R.string.activity_result_long,
-                R.drawable.ic_result_long,
-                R.string.activity_result_long_hair,
-                R.string.activity_result_long_makeup,
-                R.string.activity_result_long_eyebrow,
-                R.drawable.img_result_long_eyebrow
-            )
-            else -> {
-                tvResult.text = "얼굴형을 알 수 없습니다."
+                    face = document.get("face_shape").toString()
+                    body = document.get("body_shape").toString()
+                    Log.i("A_Result", "face, body = ${face}, ${body}")
+                }
             }
-        }
 
-        // 체형
-        when (bodyShape) {
-            "Straight" -> {
-                ivResult.setImageResource(R.drawable.ic_result_straight)
-                tvComment.setText(R.string.activity_result_straight_comment)
-                tvFeature.setText(R.string.activity_result_straight_feature)
-                tvTip.setText(R.string.activity_result_straight_tip)
+        val activity = intent.getStringExtra("Activity")
+        if (activity.equals("Face")) {
+            // 얼굴형 및 체형 결과 가져오기
+
+            // 얼굴형
+            when (face) {
+                "Oval" -> {
+                    setContentView(R.layout.activity_result_oval)
+                    findViewById<TextView>(R.id.oval_tvUserName).text = name
+                }
+
+                "Round" -> {
+                    setContentView(R.layout.activity_result_round)
+                    findViewById<TextView>(R.id.round_tvUserName).text = name
+                }
+
+                "Square" -> {
+                    setContentView(R.layout.activity_result_square)
+                    findViewById<TextView>(R.id.square_tvUserName).text = name
+                }
+
+                "Long" -> {
+                    setContentView(R.layout.activity_result_long)
+                    findViewById<TextView>(R.id.long_tvUserName).text = name
+                }
+
+                else -> utils.showToast("잘못된 결과입니다.")
             }
-            "Natural" -> {
-                ivResult.setImageResource(R.drawable.ic_result_natural)
-                tvComment.setText(R.string.activity_result_natural_comment)
-                tvFeature.setText(R.string.activity_result_natural_feature)
-                tvTip.setText(R.string.activity_result_natural_tip)
-            }
-            "Wave" -> {
-                ivResult.setImageResource(R.drawable.ic_result_wave)
-                tvComment.setText(R.string.activity_result_wave_comment)
-                tvFeature.setText(R.string.activity_result_wave_feature)
-                tvTip.setText(R.string.activity_result_wave_tip)
-            }
-            else -> {
-                tvComment.text = "체형 정보를 알 수 없습니다."
+        } else if (activity.equals("Hand")) {
+
+            // 체형
+            when (body) {
+                "Straight" -> {
+                    setContentView(R.layout.activity_result_straight)
+                    findViewById<TextView>(R.id.straight_tvUserName).text = name
+                }
+
+                "Natural" -> {
+                    setContentView(R.layout.activity_result_natural)
+                    findViewById<TextView>(R.id.natural_tvUserName).text = name
+                }
+
+                "Wave" -> {
+                    setContentView(R.layout.activity_result_wave)
+                    findViewById<TextView>(R.id.wave_tvUserName).text = name
+                }
+
+                else -> utils.showToast("잘못된 결과입니다.")
             }
         }
     }

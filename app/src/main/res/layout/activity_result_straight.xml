@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/activity_result_tvUserName"
+                        android:id="@+id/straight_tvUserName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/activity_result_userName"

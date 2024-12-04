@@ -26,6 +26,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.borntobe.databinding.ActivityHandAnalysisBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -122,6 +123,9 @@ class HandAnalysisActivity : AppCompatActivity() {
         binding = ActivityHandAnalysisBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 뒤로가기 콜백 등록
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
         // 시스템 바 영역 적용
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -131,6 +135,30 @@ class HandAnalysisActivity : AppCompatActivity() {
 
         // Firestore 데이터베이스 초기화
         db = Firebase.firestore
+
+        val dataStore = DataStoreModule(this)
+        // 현재 사용자 정보 가져오기
+        var id = "NULL"
+        var name = "NULL"
+        var pw = "NULL"
+        lifecycleScope.launch {
+            dataStore.userNameFlow.collect { userName ->
+                name = userName
+                Log.i("A_Hand", "User Name: $name")
+            }
+        }
+        lifecycleScope.launch {
+            dataStore.userIDFlow.collect { userID ->
+                id = userID
+                Log.i("A_Hand", "User ID: $id")
+            }
+        }
+        lifecycleScope.launch {
+            dataStore.userPWFlow.collect { userPW ->
+                pw = userPW
+                Log.i("A_Hand", "User PW: $pw")
+            }
+        }
 
         // 다이얼로그 설정
         dialog = Dialog(this)
@@ -197,56 +225,39 @@ class HandAnalysisActivity : AppCompatActivity() {
                     HandAnalysisHelper(handLandMarkerResult, handStandardResult!!)
                 handAnalysisHelper.classifier()
                 val bodyShape = handAnalysisHelper.analysisBodyShape()
-                utils.showToast("결과 사진 업로드 완료. 체형은 $bodyShape")
-                // 현재 사용자 ID 가져오기
-                val dataStore = DataStoreModule(this)
-                val userID = dataStore.userIDFlow.toString()
+                utils.showToast("분석 완료! 결과를 확인해보세요.")
+
                 // 현재 사용자가 DB에 존재하는지 검사
-                var isNotExistID = false
                 db.collection("users")
-                    .whereEqualTo("id", userID)
+                    .whereEqualTo("id", id)
                     .get()
                     .addOnSuccessListener { documents ->
-                        isNotExistID = documents.isEmpty
+                        if (!documents.isEmpty) {
+                            // 문서가 존재하면 업데이트
+                            val document = documents.documents[0] // 첫 번째 문서 가져오기
+                            val documentRef = document.reference
+
+                            // DB에 사용자 체형 결과 저장
+                            documentRef.update("body_shape", bodyShape)
+                                .addOnSuccessListener {
+                                    // 결과 화면으로 전환
+                                    btnResult = binding.activityHandAnalysisBtnResult
+                                    btnResult.visibility = View.VISIBLE
+                                    btnResult.setOnClickListener {
+                                        intent = Intent(this, ResultActivity::class.java)
+                                        intent.putExtra("Activity", "Hand")
+                                        startActivity(intent)
+                                    }
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w("FaceAnalysis", "Error adding document", e)
+                                }
+                        } else
+                            utils.showToast("사용자 정보가 데이터베이스에 존재하지 않습니다.")
                     }
                     .addOnFailureListener { exception ->
                         Log.w("signUp", "Error getting documents: ", exception)
                     }
-                if (!isNotExistID) {
-                    // DB에 사용자 체형 결과 저장
-                    val data = hashMapOf(
-                        "body_shape" to bodyShape
-                    )
-                    db.collection("users")
-                        .add(data)
-                        .addOnSuccessListener { documentReference ->
-                            Log.d(
-                                "HandAnalysis",
-                                "DocumentSnapshot written with ID: ${documentReference.id}"
-                            )
-                        }
-                        .addOnFailureListener { e ->
-                            Log.w("HandAnalysis", "Error adding document", e)
-                        }
-                    // 결과 화면으로 전환
-                    btnResult = binding.activityHandAnalysisBtnResult
-                    btnResult.visibility = View.VISIBLE
-                    btnResult.setOnClickListener {
-                        intent = Intent(this, ResultActivity::class.java)
-                        var userName = "userName"
-                        CoroutineScope(Dispatchers.IO).launch {
-                            dataStore.userNameFlow.collectLatest {
-                                userName = it
-                            }
-                        }
-                        Thread.sleep(1000)
-                        intent.putExtra("userName", userName)
-                        intent.putExtra("bodyShape", bodyShape)
-                        intent.putExtra("ActivityName", "Hand")
-                        startActivity(intent)
-                    }
-                } else
-                    utils.showToast("사용자 정보가 데이터베이스에 존재하지 않습니다.")
             } else
                 utils.showToast("분석을 수행할 수 없습니다.")
         }
