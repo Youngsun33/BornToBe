@@ -51,14 +51,14 @@ class ResultActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+//            insets
+//        }
 
         binding = ActivityResultBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+//        setContentView(binding.root)
 
         // 뒤로가기 콜백 등록
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
@@ -91,91 +91,117 @@ class ResultActivity : AppCompatActivity() {
         }
 
         // set userName
-        tvUserName = binding.activityResultTvUserName
-        tvUserName.text = name
+//        tvUserName = binding.activityResultTvUserName
+//        tvUserName.text = name
+//
+//        // set gradient
+//        tvResult = binding.activityResultTvResult
+//        tvResult.setTextColorAsLinearGradient(
+//            arrayOf(
+//                Color.parseColor("#EB00FF"),
+//                Color.parseColor("#0029FF")
+//            )
+//        )
+//
+//        // set ImageView and TextView
+//        iv = binding.activityResultIvResult
+//        tvComment = binding.activityResultTvComment
+//        tvFeature = binding.activityResultTvFeature
+//        tvTip = binding.activityResultTvTip
+//        ivResult = binding.activityResultIvResult
 
-        // set gradient
-        tvResult = binding.activityResultTvResult
-        tvResult.setTextColorAsLinearGradient(
-            arrayOf(
-                Color.parseColor("#EB00FF"),
-                Color.parseColor("#0029FF")
-            )
-        )
+        val activityType = intent.getStringExtra("Activity")
+        if (activityType != null) {
+            Log.i("activityType", activityType)
+            
+            // 사용자 정보 찾기
+            db.collection("users")
+                .whereEqualTo("id", id)
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (!documents.isEmpty) {
+                        val document = documents.documents[0]
+                        val faceShape = document.getString("face_shape") ?: "Unknown"
+                        val bodyShape = document.getString("body_shape") ?: "Unknown"
 
-        // set ImageView and TextView
-        iv = binding.activityResultIvResult
-        tvComment = binding.activityResultTvComment
-        tvFeature = binding.activityResultTvFeature
-        tvTip = binding.activityResultTvTip
-        ivResult = binding.activityResultIvResult
-
+                        // 결과 화면 설정
+                        when (activityType) {
+                            "Face" -> showFaceResultLayout(faceShape, name)
+                            "Hand" -> showBodyResultLayout(bodyShape, name)
+                            else -> utils.showToast("알 수 없는 Activity 유형입니다.")
+                        }
+                    }
+                }
+                .addOnFailureListener {
+                    utils.showToast("데이터를 불러오는 중 오류가 발생했습니다.")
+                }
+        }
+        // Firestore에서 데이터 가져오기
+        if (activityType != null) {
+            fetchUserData(id, activityType, db, utils, name)
+        }
         // 얼굴형 및 체형 결과 가져오기
         var face = "NULL"
         var body = "NULL"
-        db.collection("users")
-            .whereEqualTo("id", id)
-            .get()
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    // 문서가 존재하면 업데이트
-                    val document = documents.documents[0] // 첫 번째 문서 가져오기
+    }
 
-                    face = document.get("face_shape").toString()
-                    body = document.get("body_shape").toString()
-                    Log.i("A_Result", "face, body = ${face}, ${body}")
-                }
+    // Firestore에서 사용자 데이터 가져오기
+    private fun fetchUserData(
+        userId: String,
+        activityType: String,
+        db: FirebaseFirestore,
+        utils: Utils,
+        name: String
+    ) {
+
+    }
+
+    // 얼굴형 결과 레이아웃 설정
+    private fun showFaceResultLayout(faceShape: String, name: String) {
+        when (faceShape) {
+            "Oval" -> {
+                setContentView(R.layout.activity_result_oval)
+                findViewById<TextView>(R.id.oval_tvUserName)?.text = name
             }
 
-        val activity = intent.getStringExtra("Activity")
-        if (activity.equals("Face")) {
-            // 얼굴형 및 체형 결과 가져오기
-
-            // 얼굴형
-            when (face) {
-                "Oval" -> {
-                    setContentView(R.layout.activity_result_oval)
-                    findViewById<TextView>(R.id.oval_tvUserName).text = name
-                }
-
-                "Round" -> {
-                    setContentView(R.layout.activity_result_round)
-                    findViewById<TextView>(R.id.round_tvUserName).text = name
-                }
-
-                "Square" -> {
-                    setContentView(R.layout.activity_result_square)
-                    findViewById<TextView>(R.id.square_tvUserName).text = name
-                }
-
-                "Long" -> {
-                    setContentView(R.layout.activity_result_long)
-                    findViewById<TextView>(R.id.long_tvUserName).text = name
-                }
-
-                else -> utils.showToast("잘못된 결과입니다.")
+            "Round" -> {
+                setContentView(R.layout.activity_result_round)
+                findViewById<TextView>(R.id.round_tvUserName)?.text = name
             }
-        } else if (activity.equals("Hand")) {
 
-            // 체형
-            when (body) {
-                "Straight" -> {
-                    setContentView(R.layout.activity_result_straight)
-                    findViewById<TextView>(R.id.straight_tvUserName).text = name
-                }
-
-                "Natural" -> {
-                    setContentView(R.layout.activity_result_natural)
-                    findViewById<TextView>(R.id.natural_tvUserName).text = name
-                }
-
-                "Wave" -> {
-                    setContentView(R.layout.activity_result_wave)
-                    findViewById<TextView>(R.id.wave_tvUserName).text = name
-                }
-
-                else -> utils.showToast("잘못된 결과입니다.")
+            "Square" -> {
+                setContentView(R.layout.activity_result_square)
+                findViewById<TextView>(R.id.square_tvUserName)?.text = name
             }
+
+            "Oblong" -> {
+                setContentView(R.layout.activity_result_long)
+                findViewById<TextView>(R.id.long_tvUserName)?.text = name
+            }
+
+            else -> utils.showToast("잘못된 얼굴형 결과입니다.")
+        }
+    }
+
+    // 체형 결과 레이아웃 설정
+    private fun showBodyResultLayout(bodyShape: String, name: String) {
+        when (bodyShape) {
+            "Straight" -> {
+                setContentView(R.layout.activity_result_straight)
+                findViewById<TextView>(R.id.straight_tvUserName)?.text = name
+            }
+
+            "Natural" -> {
+                setContentView(R.layout.activity_result_natural)
+                findViewById<TextView>(R.id.natural_tvUserName)?.text = name
+            }
+
+            "Wave" -> {
+                setContentView(R.layout.activity_result_wave)
+                findViewById<TextView>(R.id.wave_tvUserName)?.text = name
+            }
+
+            else -> utils.showToast("잘못된 체형 결과입니다.")
         }
     }
 

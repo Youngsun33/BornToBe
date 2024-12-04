@@ -17,6 +17,7 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
@@ -246,7 +247,7 @@ class HandAnalysisActivity : AppCompatActivity() {
                                     btnResult.setOnClickListener {
                                         intent = Intent(this, ResultActivity::class.java)
                                         intent.putExtra("Activity", "Hand")
-                                        startActivity(intent)
+                                        showBodyResultLayout(bodyShape, name)
                                     }
                                 }
                                 .addOnFailureListener { e ->
@@ -260,6 +261,28 @@ class HandAnalysisActivity : AppCompatActivity() {
                     }
             } else
                 utils.showToast("분석을 수행할 수 없습니다.")
+        }
+    }
+
+    // 체형 결과 레이아웃 설정
+    private fun showBodyResultLayout(bodyShape: String, name: String) {
+        when (bodyShape) {
+            "Straight" -> {
+                setContentView(R.layout.activity_result_straight)
+                findViewById<TextView>(R.id.straight_tvUserName)?.text = name
+            }
+
+            "Natural" -> {
+                setContentView(R.layout.activity_result_natural)
+                findViewById<TextView>(R.id.natural_tvUserName)?.text = name
+            }
+
+            "Wave" -> {
+                setContentView(R.layout.activity_result_wave)
+                findViewById<TextView>(R.id.wave_tvUserName)?.text = name
+            }
+
+            else -> utils.showToast("잘못된 체형 결과입니다.")
         }
     }
 

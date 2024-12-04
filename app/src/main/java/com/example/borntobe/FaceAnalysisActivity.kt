@@ -204,7 +204,7 @@ class FaceAnalysisActivity : AppCompatActivity() {
                                 btnResult.setOnClickListener {
                                     intent = Intent(this, ResultActivity::class.java)
                                     intent.putExtra("Activity", "Face")
-                                    startActivity(intent)
+                                    showFaceResultLayout(faceShape, name)
                                 }
                             }
                             .addOnFailureListener { e ->
@@ -217,6 +217,33 @@ class FaceAnalysisActivity : AppCompatActivity() {
                 .addOnFailureListener { exception ->
                     Log.w("signUp", "Error getting documents: ", exception)
                 }
+        }
+    }
+
+    // 얼굴형 결과 레이아웃 설정
+    private fun showFaceResultLayout(faceShape: String, name: String) {
+        when (faceShape) {
+            "Oval" -> {
+                setContentView(R.layout.activity_result_oval)
+                findViewById<TextView>(R.id.oval_tvUserName)?.text = name
+            }
+
+            "Round" -> {
+                setContentView(R.layout.activity_result_round)
+                findViewById<TextView>(R.id.round_tvUserName)?.text = name
+            }
+
+            "Square" -> {
+                setContentView(R.layout.activity_result_square)
+                findViewById<TextView>(R.id.square_tvUserName)?.text = name
+            }
+
+            "Oblong" -> {
+                setContentView(R.layout.activity_result_long)
+                findViewById<TextView>(R.id.long_tvUserName)?.text = name
+            }
+
+            else -> utils.showToast("잘못된 얼굴형 결과입니다.")
         }
     }
 
