@@ -70,6 +70,7 @@ class HandAnalysisActivity : AppCompatActivity() {
     private lateinit var handLandmarkerHelper: HandLandmarkerHelper
     private lateinit var dialog: Dialog
     private val utils: Utils = Utils(this)
+    private var isResultScreen = false // 결과 화면 여부를 나타내는 플래그
     private lateinit var db: FirebaseFirestore
 
     // onBackPressedCallback : 뒤로 가기 동작을 정의하는 callback 메소드
@@ -78,8 +79,22 @@ class HandAnalysisActivity : AppCompatActivity() {
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
-                    backKeyPressedTime = System.currentTimeMillis()
-                    utils.showToast("뒤로가기를 한번 더 누르면 종료됩니다.")
+                    if (isResultScreen) {
+                        // 결과 화면에서 뒤로 가기 -> 초기 레이아웃 복원
+                        val intent = Intent(this@HandAnalysisActivity, HandAnalysisActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                        startActivity(intent)
+                        isResultScreen = false // 상태 초기화
+                    } else {
+                        backKeyPressedTime = System.currentTimeMillis()
+                        utils.showToast("뒤로가기를 한번 더 누르면 종료됩니다.")
+
+                        // 이전 화면 새로 갱신을 위해 Intent 전달
+                        val intent = Intent(this@HandAnalysisActivity, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP // 이전 화면을 새로 시작
+                        startActivity(intent)
+                        finish()
+                    }
                 } else {
                     exitProgram()
                 }
@@ -195,6 +210,12 @@ class HandAnalysisActivity : AppCompatActivity() {
         handLandmarkerHelper = HandLandmarkerHelper(context = this)
         // 분석 버튼
         btnAnalysis.setOnClickListener {
+            // 인터넷 연결 확인
+            if (!utils.isNetworkAvailable()) {
+                utils.showToast("인터넷에 연결되어 있지 않습니다. \n연결 후 다시 시도해주세요.")
+                return@setOnClickListener
+            }
+
             // 규격 이미지에서 LandMark 추출하여 결과 반환
             // 1. asset 폴더에서 규격 이미지 읽어오기
             val assetManager = resources.assets
@@ -260,12 +281,13 @@ class HandAnalysisActivity : AppCompatActivity() {
                         Log.w("signUp", "Error getting documents: ", exception)
                     }
             } else
-                utils.showToast("분석을 수행할 수 없습니다.")
+                utils.showToast("이미지 분석에 실패했습니다.")
         }
     }
 
     // 체형 결과 레이아웃 설정
     private fun showBodyResultLayout(bodyShape: String, name: String) {
+        isResultScreen = true
         when (bodyShape) {
             "Straight" -> {
                 setContentView(R.layout.activity_result_straight)

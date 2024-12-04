@@ -89,6 +89,7 @@ class MainActivity : AppCompatActivity() {
             // 체형 분석 화면 전환
             val intent = Intent(this, HandAnalysisActivity::class.java)
             startActivity(intent)
+            finish()
         }
 
         // 얼굴 분석 버튼
@@ -96,6 +97,7 @@ class MainActivity : AppCompatActivity() {
             // 얼굴 분석 화면 전환
             val intent = Intent(this, FaceAnalysisActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 }

@@ -56,6 +56,7 @@ class FaceAnalysisActivity : AppCompatActivity() {
     private lateinit var processedBitmap: Bitmap
     private lateinit var tflite: Interpreter
     private lateinit var db: FirebaseFirestore
+    private var isResultScreen = false // 결과 화면 여부를 나타내는 플래그
     private val utils: Utils = Utils(this)
 
     // onBackPressedCallback : 뒤로 가기 동작을 정의하는 callback 메소드
@@ -64,8 +65,22 @@ class FaceAnalysisActivity : AppCompatActivity() {
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
-                    backKeyPressedTime = System.currentTimeMillis()
-                    utils.showToast("뒤로가기를 한번 더 누르면 종료됩니다.")
+                    if (isResultScreen) {
+                        // 결과 화면에서 뒤로 가기 -> 초기 레이아웃 복원
+                        val intent = Intent(this@FaceAnalysisActivity, FaceAnalysisActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                        startActivity(intent)
+                        isResultScreen = false // 상태 초기화
+                    } else {
+                        backKeyPressedTime = System.currentTimeMillis()
+                        utils.showToast("뒤로가기를 한번 더 누르면 종료됩니다.")
+
+                        // 이전 화면 새로 갱신을 위해 Intent 전달
+                        val intent = Intent(this@FaceAnalysisActivity, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP // 이전 화면을 새로 시작
+                        startActivity(intent)
+                        finish()
+                    }
                 } else {
                     exitProgram()
                 }
@@ -142,11 +157,16 @@ class FaceAnalysisActivity : AppCompatActivity() {
         // 다이얼로그 설정
         dialog = Dialog(this)
         dialog.setContentView(R.layout.dialog_caution)
-        dialog.findViewById<TextView>(R.id.dialog_caution_tvInfo01).setText(R.string.dialog_caution_faceInfo01)
-        dialog.findViewById<TextView>(R.id.dialog_caution_tvInfo02).setText(R.string.dialog_caution_faceInfo02)
-        dialog.findViewById<TextView>(R.id.dialog_caution_tvInfo03).setText(R.string.dialog_caution_faceInfo03)
-        dialog.findViewById<TextView>(R.id.dialog_caution_tvInfo04).setText(R.string.dialog_caution_faceInfo04)
-        dialog.findViewById<ImageView>(R.id.dialog_caution_ivIC).setImageResource(R.drawable.ic_caution_face)
+        dialog.findViewById<TextView>(R.id.dialog_caution_tvInfo01)
+            .setText(R.string.dialog_caution_faceInfo01)
+        dialog.findViewById<TextView>(R.id.dialog_caution_tvInfo02)
+            .setText(R.string.dialog_caution_faceInfo02)
+        dialog.findViewById<TextView>(R.id.dialog_caution_tvInfo03)
+            .setText(R.string.dialog_caution_faceInfo03)
+        dialog.findViewById<TextView>(R.id.dialog_caution_tvInfo04)
+            .setText(R.string.dialog_caution_faceInfo04)
+        dialog.findViewById<ImageView>(R.id.dialog_caution_ivIC)
+            .setImageResource(R.drawable.ic_caution_face)
         dialog.window!!.setLayout(
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.WRAP_CONTENT
@@ -177,13 +197,13 @@ class FaceAnalysisActivity : AppCompatActivity() {
         btnAnalysis = binding.activityFaceAnalysisBtnAnalysis
         // 분석 버튼 클릭 리스너 추가
         btnAnalysis.setOnClickListener {
-            var faceShape = "NULL"
-
-            // 이미지 크롭 및 리사이즈
-            preprocessImageForModel(image) { processedBitmap ->
-                // 얼굴 분석 실행
-                faceShape = analyzeFaceShapeWithModel(processedBitmap, tflite)
+            // 인터넷 연결 확인
+            if (!utils.isNetworkAvailable()) {
+                utils.showToast("인터넷에 연결되어 있지 않습니다. \n연결 후 다시 시도해주세요.")
+                return@setOnClickListener
             }
+
+            var faceShape = "NULL"
 
             // 현재 사용자가 DB에 존재하는지 검사
             db.collection("users")
@@ -194,6 +214,12 @@ class FaceAnalysisActivity : AppCompatActivity() {
                         // 문서가 존재하면 업데이트
                         val document = documents.documents[0] // 첫 번째 문서 가져오기
                         val documentRef = document.reference
+
+                        // 이미지 크롭 및 리사이즈
+                        preprocessImageForModel(image) { processedBitmap ->
+                            // 얼굴 분석 실행
+                            faceShape = analyzeFaceShapeWithModel(processedBitmap, tflite)
+                        }
 
                         // DB에 사용자 체형 결과 저장
                         documentRef.update("face_shape", faceShape)
@@ -209,19 +235,22 @@ class FaceAnalysisActivity : AppCompatActivity() {
                             }
                             .addOnFailureListener { e ->
                                 Log.w("FaceAnalysis", "Error adding document", e)
+                                utils.showToast("결과를 저장할 수 없습니다.")
                             }
                     } else {
+                        // 문서가 존재하지 않는 경우
                         utils.showToast("사용자 정보가 데이터베이스에 존재하지 않습니다.")
                     }
                 }
-                .addOnFailureListener { exception ->
-                    Log.w("signUp", "Error getting documents: ", exception)
+                .addOnFailureListener {
+                    utils.showToast("데이터베이스 조회 중 문제가 발생했습니다.")
                 }
         }
     }
 
     // 얼굴형 결과 레이아웃 설정
     private fun showFaceResultLayout(faceShape: String, name: String) {
+        isResultScreen = true // 결과 화면으로 변경
         when (faceShape) {
             "Oval" -> {
                 setContentView(R.layout.activity_result_oval)
@@ -304,7 +333,12 @@ class FaceAnalysisActivity : AppCompatActivity() {
     }
 
     // 크롭 및 리사이즈 함수
-    private fun cropAndResize(bitmap: Bitmap, boundingBox: Rect, targetWidth: Int, targetHeight: Int): Bitmap {
+    private fun cropAndResize(
+        bitmap: Bitmap,
+        boundingBox: Rect,
+        targetWidth: Int,
+        targetHeight: Int
+    ): Bitmap {
         val croppedBitmap = Bitmap.createBitmap(
             bitmap,
             boundingBox.left,
@@ -326,12 +360,24 @@ class FaceAnalysisActivity : AppCompatActivity() {
             // 가로가 더 긴 경우
             val scaledWidth = (inputAspectRatio * targetHeight).toInt()
             val resizedBitmap = Bitmap.createScaledBitmap(bitmap, scaledWidth, targetHeight, true)
-            Bitmap.createBitmap(resizedBitmap, (scaledWidth - targetWidth) / 2, 0, targetWidth, targetHeight)
+            Bitmap.createBitmap(
+                resizedBitmap,
+                (scaledWidth - targetWidth) / 2,
+                0,
+                targetWidth,
+                targetHeight
+            )
         } else if (inputAspectRatio < targetAspectRatio) {
             // 세로가 더 긴 경우
             val scaledHeight = (targetWidth / inputAspectRatio).toInt()
             val resizedBitmap = Bitmap.createScaledBitmap(bitmap, targetWidth, scaledHeight, true)
-            Bitmap.createBitmap(resizedBitmap, 0, (scaledHeight - targetHeight) / 2, targetWidth, targetHeight)
+            Bitmap.createBitmap(
+                resizedBitmap,
+                0,
+                (scaledHeight - targetHeight) / 2,
+                targetWidth,
+                targetHeight
+            )
         } else {
             // 비율이 동일한 경우
             Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, true)
@@ -349,13 +395,22 @@ class FaceAnalysisActivity : AppCompatActivity() {
     }
 
     private fun preprocessImage(bitmap: Bitmap, inputSize: Int): ByteBuffer {
-        val byteBuffer = ByteBuffer.allocateDirect(4 * inputSize * inputSize * 3) // 4바이트 (Float) x 이미지 크기 x RGB 채널
+        val byteBuffer =
+            ByteBuffer.allocateDirect(4 * inputSize * inputSize * 3) // 4바이트 (Float) x 이미지 크기 x RGB 채널
         byteBuffer.order(ByteOrder.nativeOrder())
 
         val scaledBitmap = Bitmap.createScaledBitmap(bitmap, inputSize, inputSize, true)
 
         val intValues = IntArray(inputSize * inputSize)
-        scaledBitmap.getPixels(intValues, 0, scaledBitmap.width, 0, 0, scaledBitmap.width, scaledBitmap.height)
+        scaledBitmap.getPixels(
+            intValues,
+            0,
+            scaledBitmap.width,
+            0,
+            0,
+            scaledBitmap.width,
+            scaledBitmap.height
+        )
 
         for (pixel in intValues) {
             val r = (pixel shr 16 and 0xFF) / 255.0f
