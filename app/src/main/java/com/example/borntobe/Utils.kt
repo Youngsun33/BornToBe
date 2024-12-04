@@ -1,6 +1,8 @@
 package com.example.borntobe
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -69,5 +71,13 @@ class Utils(private val context: Context) {
             editText.backgroundTintList = getColorStateList(context, R.color.red)
             false
         }
+    }
+
+    // 네트워크 상태 확인 메서드
+    fun isNetworkAvailable(): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetwork
+        val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
+        return networkCapabilities != null && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 }

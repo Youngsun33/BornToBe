@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.borntobe.databinding.ActivitySignInBinding
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -67,6 +68,7 @@ class SignInActivity : AppCompatActivity() {
         utils = Utils(this)
         // db 객체 생성
         db = Firebase.firestore
+        val dataStore = DataStoreModule(this)
         // 뒤로 가기 버튼 동작 정의
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
@@ -75,6 +77,12 @@ class SignInActivity : AppCompatActivity() {
         userID = binding.activitySignInEtID
         userPW = binding.activitySignInEtPW
         btnSignIn.setOnClickListener {
+            // 인터넷 연결 확인
+            if (!utils.isNetworkAvailable()) {
+                utils.showToast("인터넷에 연결되어 있지 않습니다. \n연결 후 다시 시도해주세요.")
+                return@setOnClickListener
+            }
+
             // 입력 검사
             val id = userID.text.toString()
             val pw = userPW.text.toString()
@@ -112,14 +120,22 @@ class SignInActivity : AppCompatActivity() {
                         else if (documents.isEmpty)
                             utils.showToast("아이디 또는 비밀번호가 일치하지 않습니다.")
                         else {
+                            val document = documents.documents[0] // 첫 번째 문서 가져오기
+                            val name = document.getString("name") // "name" 필드 값 가져오기
+                            lifecycleScope.launch {
+                                dataStore.saveUserID(id)
+                                dataStore.saveUserPW(pw)
+                                dataStore.saveUserName(name!!)
+                            }
                             // 자동 로그인 체크 박스 : 사용자가 자동 로그인을 체크했다면 자동 로그인 설정
                             chkAutoLogin = binding.activitySignInChkAutoLogin
                             if (chkAutoLogin.isChecked) {
-                                val dataStore = DataStoreModule(this)
-                                CoroutineScope(Dispatchers.IO).launch {
+                                lifecycleScope.launch {
                                     dataStore.saveAutoLoginState("true")
                                 }
                             }
+                            Log.i("A_SignIn", id)
+                            Log.i("A_SignIn", pw)
                             // 로그인 : 메인 화면 전환
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)

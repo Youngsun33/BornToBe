@@ -17,6 +17,7 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
@@ -26,6 +27,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.borntobe.databinding.ActivityHandAnalysisBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -68,6 +70,7 @@ class HandAnalysisActivity : AppCompatActivity() {
     private lateinit var handLandmarkerHelper: HandLandmarkerHelper
     private lateinit var dialog: Dialog
     private val utils: Utils = Utils(this)
+    private var isResultScreen = false // 결과 화면 여부를 나타내는 플래그
     private lateinit var db: FirebaseFirestore
 
     // onBackPressedCallback : 뒤로 가기 동작을 정의하는 callback 메소드
@@ -76,8 +79,22 @@ class HandAnalysisActivity : AppCompatActivity() {
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
-                    backKeyPressedTime = System.currentTimeMillis()
-                    utils.showToast("뒤로가기를 한번 더 누르면 종료됩니다.")
+                    if (isResultScreen) {
+                        // 결과 화면에서 뒤로 가기 -> 초기 레이아웃 복원
+                        val intent = Intent(this@HandAnalysisActivity, HandAnalysisActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                        startActivity(intent)
+                        isResultScreen = false // 상태 초기화
+                    } else {
+                        backKeyPressedTime = System.currentTimeMillis()
+                        utils.showToast("뒤로가기를 한번 더 누르면 종료됩니다.")
+
+                        // 이전 화면 새로 갱신을 위해 Intent 전달
+                        val intent = Intent(this@HandAnalysisActivity, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP // 이전 화면을 새로 시작
+                        startActivity(intent)
+                        finish()
+                    }
                 } else {
                     exitProgram()
                 }
@@ -122,6 +139,9 @@ class HandAnalysisActivity : AppCompatActivity() {
         binding = ActivityHandAnalysisBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 뒤로가기 콜백 등록
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
         // 시스템 바 영역 적용
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -131,6 +151,30 @@ class HandAnalysisActivity : AppCompatActivity() {
 
         // Firestore 데이터베이스 초기화
         db = Firebase.firestore
+
+        val dataStore = DataStoreModule(this)
+        // 현재 사용자 정보 가져오기
+        var id = "NULL"
+        var name = "NULL"
+        var pw = "NULL"
+        lifecycleScope.launch {
+            dataStore.userNameFlow.collect { userName ->
+                name = userName
+                Log.i("A_Hand", "User Name: $name")
+            }
+        }
+        lifecycleScope.launch {
+            dataStore.userIDFlow.collect { userID ->
+                id = userID
+                Log.i("A_Hand", "User ID: $id")
+            }
+        }
+        lifecycleScope.launch {
+            dataStore.userPWFlow.collect { userPW ->
+                pw = userPW
+                Log.i("A_Hand", "User PW: $pw")
+            }
+        }
 
         // 다이얼로그 설정
         dialog = Dialog(this)
@@ -166,6 +210,12 @@ class HandAnalysisActivity : AppCompatActivity() {
         handLandmarkerHelper = HandLandmarkerHelper(context = this)
         // 분석 버튼
         btnAnalysis.setOnClickListener {
+            // 인터넷 연결 확인
+            if (!utils.isNetworkAvailable()) {
+                utils.showToast("인터넷에 연결되어 있지 않습니다. \n연결 후 다시 시도해주세요.")
+                return@setOnClickListener
+            }
+
             // 규격 이미지에서 LandMark 추출하여 결과 반환
             // 1. asset 폴더에서 규격 이미지 읽어오기
             val assetManager = resources.assets
@@ -197,58 +247,64 @@ class HandAnalysisActivity : AppCompatActivity() {
                     HandAnalysisHelper(handLandMarkerResult, handStandardResult!!)
                 handAnalysisHelper.classifier()
                 val bodyShape = handAnalysisHelper.analysisBodyShape()
-                utils.showToast("결과 사진 업로드 완료. 체형은 $bodyShape")
-                // 현재 사용자 ID 가져오기
-                val dataStore = DataStoreModule(this)
-                val userID = dataStore.userIDFlow.toString()
+                utils.showToast("분석 완료! 결과를 확인해보세요.")
+
                 // 현재 사용자가 DB에 존재하는지 검사
-                var isNotExistID = false
                 db.collection("users")
-                    .whereEqualTo("id", userID)
+                    .whereEqualTo("id", id)
                     .get()
                     .addOnSuccessListener { documents ->
-                        isNotExistID = documents.isEmpty
+                        if (!documents.isEmpty) {
+                            // 문서가 존재하면 업데이트
+                            val document = documents.documents[0] // 첫 번째 문서 가져오기
+                            val documentRef = document.reference
+
+                            // DB에 사용자 체형 결과 저장
+                            documentRef.update("body_shape", bodyShape)
+                                .addOnSuccessListener {
+                                    // 결과 화면으로 전환
+                                    btnResult = binding.activityHandAnalysisBtnResult
+                                    btnResult.visibility = View.VISIBLE
+                                    btnResult.setOnClickListener {
+                                        intent = Intent(this, ResultActivity::class.java)
+                                        intent.putExtra("Activity", "Hand")
+                                        showBodyResultLayout(bodyShape, name)
+                                    }
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w("FaceAnalysis", "Error adding document", e)
+                                }
+                        } else
+                            utils.showToast("사용자 정보가 데이터베이스에 존재하지 않습니다.")
                     }
                     .addOnFailureListener { exception ->
                         Log.w("signUp", "Error getting documents: ", exception)
                     }
-                if (!isNotExistID) {
-                    // DB에 사용자 체형 결과 저장
-                    val data = hashMapOf(
-                        "body_shape" to bodyShape
-                    )
-                    db.collection("users")
-                        .add(data)
-                        .addOnSuccessListener { documentReference ->
-                            Log.d(
-                                "HandAnalysis",
-                                "DocumentSnapshot written with ID: ${documentReference.id}"
-                            )
-                        }
-                        .addOnFailureListener { e ->
-                            Log.w("HandAnalysis", "Error adding document", e)
-                        }
-                    // 결과 화면으로 전환
-                    btnResult = binding.activityHandAnalysisBtnResult
-                    btnResult.visibility = View.VISIBLE
-                    btnResult.setOnClickListener {
-                        intent = Intent(this, ResultActivity::class.java)
-                        var userName = "userName"
-                        CoroutineScope(Dispatchers.IO).launch {
-                            dataStore.userNameFlow.collectLatest {
-                                userName = it
-                            }
-                        }
-                        Thread.sleep(1000)
-                        intent.putExtra("userName", userName)
-                        intent.putExtra("bodyShape", bodyShape)
-                        intent.putExtra("ActivityName", "Hand")
-                        startActivity(intent)
-                    }
-                } else
-                    utils.showToast("사용자 정보가 데이터베이스에 존재하지 않습니다.")
             } else
-                utils.showToast("분석을 수행할 수 없습니다.")
+                utils.showToast("이미지 분석에 실패했습니다.")
+        }
+    }
+
+    // 체형 결과 레이아웃 설정
+    private fun showBodyResultLayout(bodyShape: String, name: String) {
+        isResultScreen = true
+        when (bodyShape) {
+            "Straight" -> {
+                setContentView(R.layout.activity_result_straight)
+                findViewById<TextView>(R.id.straight_tvUserName)?.text = name
+            }
+
+            "Natural" -> {
+                setContentView(R.layout.activity_result_natural)
+                findViewById<TextView>(R.id.natural_tvUserName)?.text = name
+            }
+
+            "Wave" -> {
+                setContentView(R.layout.activity_result_wave)
+                findViewById<TextView>(R.id.wave_tvUserName)?.text = name
+            }
+
+            else -> utils.showToast("잘못된 체형 결과입니다.")
         }
     }
 

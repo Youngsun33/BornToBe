@@ -5,11 +5,14 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.borntobe.databinding.ActivityMainBinding
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -43,6 +46,22 @@ class MainActivity : AppCompatActivity() {
 
         // 뒤로 가기 버튼 동작 정의
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        val dataStore = DataStoreModule(this)
+        lifecycleScope.launch {
+            dataStore.userNameFlow.collect { userName ->
+                Log.i("A_Main", "User Name: $userName")
+            }
+        }
+        lifecycleScope.launch {
+            dataStore.userIDFlow.collect { userID ->
+                Log.i("A_Main", "User ID: $userID")
+            }
+        }
+        lifecycleScope.launch {
+            dataStore.userPWFlow.collect { userPW ->
+                Log.i("A_Main", "User PW: $userPW")
+            }
+        }
 
         // 다이얼로그 설정
         dialog = Dialog(this)
@@ -70,6 +89,7 @@ class MainActivity : AppCompatActivity() {
             // 체형 분석 화면 전환
             val intent = Intent(this, HandAnalysisActivity::class.java)
             startActivity(intent)
+            finish()
         }
 
         // 얼굴 분석 버튼
@@ -77,6 +97,7 @@ class MainActivity : AppCompatActivity() {
             // 얼굴 분석 화면 전환
             val intent = Intent(this, FaceAnalysisActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 }
