@@ -1,19 +1,16 @@
 # BornToBe
 ## 💻프로젝트 소개
+![졸업전시회  발표 영상_썸네일_코더_크기 변경 전](https://github.com/user-attachments/assets/e0afb279-59ce-475a-8d51-70da73b2d97a)
 BornToBe는 사용자가 제공한 사진을 통해 얼굴형 및 체형 분석을 수행하고, 맞춤 스타일링을 제공하는 안드로이드 어플리케이션입니다.
 
-
 ## 📆개발 기간
-#### 2024.03.06(수) ~ 2024.06.19(수)
-+ 주제 발표 : 2024.03.27 (수)
-+ 중간 발표 : 2024.04.24 (수)
-+ 기말 발표 : 2024.06.19 (수)
+#### 2024.03.06(수) ~ 2024.12.20(금)
 
 ## 👩‍💻팀원 소개
 ### Team '코더'
-+ <a href="https://github.com/seeize">박시윤</a>
-+ <a href="https://github.com/eunjinpark385">박은진</a>
-+ <a href="https://github.com/heoyoungsun33">허영선</a>
++ <a href="https://github.com/seeize">박시윤</a> : 결과 화면 담당 (분석 결과 제공)
++ <a href="https://github.com/eunjinpark385">박은진</a> : 로그인/회원가입 화면, VGG-16 기반 전이학습 얼굴형 분류 모델 개발, 손 분석 화면, 얼굴형 분석 화면 중 이미지 전처리 기능 담당
++ <a href="https://github.com/heoyoungsun33">허영선</a> : UI 디자인, 얼굴형 분석 화면 (카메라 권한 및 사용자로부터 전달 받은 이미지 저장)
 
 ## ⚙️ 개발 환경
 + **JDK** : `JDK 1.8.0`
@@ -34,14 +31,22 @@ BornToBe는 사용자가 제공한 사진을 통해 얼굴형 및 체형 분석�
 - DB에 신규 사용자 생성
 
 #### 얼굴형 분석
-- Google Teachable Machine 활용하여 생성한 모델 사용
+- VGG-16 기반 전이학습으로 얼굴형 분류 모델 개발
+- 개발한 모델은 tflite로 변환하여 어플리케이션에 탑재
 - 사용자 제공 사진으로 얼굴형 판단
-- 5개의 얼굴형 (하트형, 타원형, 계란형, 둥근형, 사각형) 중 하나로 분류
-- 학습에 사용된 데이터셋은 각 얼굴형 당 2000장 내외
+- 사용자 제공 사진 전처리
+- 4개의 얼굴형 (타원형, 계란형, 둥근형, 사각형) 중 하나로 분류
+- 모델 정확도는 모든 클래스에서 약 90%를 보임
+- 모델은 https://github.com/eunjinpark385/face_analysis_model 참조
 
 #### 체형 분석
 - '손'을 통한 채형 분석 수행
 - MediaPipe Library의 hand_landmark_detection API 활용
+
+## 🎬어플리케이션 시연 영상
+https://github.com/user-attachments/assets/98a05c7f-fa95-46f9-988c-61ea47cbb9c2
+
+
 
 ## 📚 참고 문헌
 - <a href="https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE11788126">체형 분석 참고 논문 : 박선미, 정은영. (2023). 골격진단을 위한 진단요소의 수치화 연구 (손을 중심으로). 국제보건미용학회지, 17(3), 166-176.</a>
